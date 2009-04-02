@@ -1,0 +1,14 @@
+importFrom(Biobase, annotation, exprs)
+ importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
+importFrom(affxparser, readPgf)
+importFrom(RColorBrewer, brewer.pal)
+importFrom(Biostrings, matchPattern, readFASTA, DNAString, XStringViews, complement, reverseComplement, matchPDict, PDict, countPDict)
+importClassesFrom(Biostrings, PDict, MIndex)
+exportClasses(ProbeLevelSet)
+exportMethods(getSequence,translateSampleNames,plotOnGene,excludeDoubleMatchingProbes,addSnpPdata,geneRegionScan,plotCoexpression)
+export(exonStructure,findSequenceInGenome,getMetaprobesetsFromRegionOfInterest,getLocalMetaprobeIntensities,getServerProbeIntensities,getLocalProbeIntensities,getProbesetsFromRegionOfInterest)
+
+
+
+
+
