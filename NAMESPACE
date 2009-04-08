@@ -1,5 +1,5 @@
 importFrom(Biobase, annotation, exprs)
- importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
+importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
 importFrom(affxparser, readPgf)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(Biostrings, matchPattern, readFASTA, DNAString, XStringViews, complement, reverseComplement, matchPDict, PDict, countPDict)
