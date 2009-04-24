@@ -1,0 +1,10 @@
+citEntry(entry="Article",
+  author ="Lasse Folkersen, Diego Diez, Craig E. Wheelock, Jesper Z. Haeggström, Susumu Goto, Per Eriksson, Anders Gabrielsen",
+title ="GeneRegionScan: a Bioconductor package for probe level analysis of specific, small regions of the genome",
+  journal =      "Bioinformatics",
+  volume =       "NA",
+  year =         "2009", 
+  pages =        "NA",
+  url =          "NA",
+  textVersion = "L. Folkersen et al. (2009) GeneRegionScan: a Bioconductor package for probe level analysis of specific, small regions of the genome. Bioinformatics"
+)
