@@ -568,27 +568,28 @@ getServerProbeIntensities <- function(
 		unlink("newexpressionset.rdata")
 		
 		#saving location of plink pscp for the next time
-		#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor. 
-#		if(file.access(locationFilePath,2) == 0){
-#			locationFile <- file(locationFilePath,"r")
-#			locationFileLines <- readLines(locationFile)
-#			close(locationFile)
-#			splitLocationFileLines <- strsplit(locationFileLines,"\t")
-#			newLocationFileLines <- vector()
-#			for(line in splitLocationFileLines){
-#				if(!line[1] %in% c("plinkPath","pscpPath")){
-#					newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
-#				}
-#			}	
-#			newLocationFileLines <- c(newLocationFileLines,paste("plinkPath","all",plinkPath,sep="\t"))
-#			newLocationFileLines <- c(newLocationFileLines,paste("pscpPath","all",pscpPath,sep="\t"))
-#			locationFile <- file(locationFilePath,"w")
-#			writeLines(newLocationFileLines,con=locationFile)
-#			close(locationFile)
-#			
-#		}
-#		if(file.access(locationFilePath,2) != 0 & verbose)print(paste("Would have saved the locations of plinkPath and pscpPath for next time, but did not have write 
-#									permission for the configfile",locationFilePath))
+		#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
+		#it was re-inserted because other it seems that other packages do it as well 
+		if(file.access(locationFilePath,2) == 0){
+			locationFile <- file(locationFilePath,"r")
+			locationFileLines <- readLines(locationFile)
+			close(locationFile)
+			splitLocationFileLines <- strsplit(locationFileLines,"\t")
+			newLocationFileLines <- vector()
+			for(line in splitLocationFileLines){
+				if(!line[1] %in% c("plinkPath","pscpPath")){
+					newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+				}
+			}	
+			newLocationFileLines <- c(newLocationFileLines,paste("plinkPath","all",plinkPath,sep="\t"))
+			newLocationFileLines <- c(newLocationFileLines,paste("pscpPath","all",pscpPath,sep="\t"))
+			locationFile <- file(locationFilePath,"w")
+			writeLines(newLocationFileLines,con=locationFile)
+			close(locationFile)
+			
+		}
+		if(file.access(locationFilePath,2) != 0 & verbose)print(paste("Would have saved the locations of plinkPath and pscpPath for next time, but did not have write 
+									permission for the configfile",locationFilePath))
 		
 		
 		
@@ -739,37 +740,38 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 	
 	#saving the aptCelExtract, cdf, pgf and clf locations for next time
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor. 
-#	if(file.access(locationFilePath,2) == 0){
-#		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
-#		locationFile <- file(locationFilePath,"r")
-#		locationFileLines <- readLines(locationFile)
-#		close(locationFile)
-#		splitLocationFileLines <- strsplit(locationFileLines,"\t")
-#		newLocationFileLines <- vector()
-#		#delete previous lines from this annotation
-#		for(line in splitLocationFileLines){
-#			keepline <- TRUE
-#			if("aptCelExtractPath" == line[1])keepline <- FALSE
-#			if(annotation == line[2] & line[1] %in% c("cdfPath","clfPath","pgfPath"))keepline <- FALSE
-#			
-#			if(keepline){
-#				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
-#			}
-#		}	
-#		#add the new ones
-#		newLocationFileLines <- c(newLocationFileLines,paste("aptCelExtractPath","all",aptCelExtractPath,sep="\t"))
-#		if(!is.null(cdfPath))newLocationFileLines <- c(newLocationFileLines,paste("cdfPath",annotation,cdfPath,sep="\t"))
-#		if(!is.null(clfPath))newLocationFileLines <- c(newLocationFileLines,paste("clfPath",annotation,clfPath,sep="\t"))
-#		if(!is.null(pgfPath))newLocationFileLines <- c(newLocationFileLines,paste("pgfPath",annotation,pgfPath,sep="\t"))
-#		
-#		locationFile <- file(locationFilePath,"w")
-#		writeLines(newLocationFileLines,con=locationFile)
-#		close(locationFile)
-#		
-#	}
-#	if(file.access(locationFilePath,2) != 0 & verbose){
-#		print(paste("Would have saved the locations of annotation files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
-#	}
+	#it was re-inserted because other it seems that other packages do it as well
+	if(file.access(locationFilePath,2) == 0){
+		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFile <- file(locationFilePath,"r")
+		locationFileLines <- readLines(locationFile)
+		close(locationFile)
+		splitLocationFileLines <- strsplit(locationFileLines,"\t")
+		newLocationFileLines <- vector()
+		#delete previous lines from this annotation
+		for(line in splitLocationFileLines){
+			keepline <- TRUE
+			if("aptCelExtractPath" == line[1])keepline <- FALSE
+			if(annotation == line[2] & line[1] %in% c("cdfPath","clfPath","pgfPath"))keepline <- FALSE
+			
+			if(keepline){
+				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+			}
+		}	
+		#add the new ones
+		newLocationFileLines <- c(newLocationFileLines,paste("aptCelExtractPath","all",aptCelExtractPath,sep="\t"))
+		if(!is.null(cdfPath))newLocationFileLines <- c(newLocationFileLines,paste("cdfPath",annotation,cdfPath,sep="\t"))
+		if(!is.null(clfPath))newLocationFileLines <- c(newLocationFileLines,paste("clfPath",annotation,clfPath,sep="\t"))
+		if(!is.null(pgfPath))newLocationFileLines <- c(newLocationFileLines,paste("pgfPath",annotation,pgfPath,sep="\t"))
+		
+		locationFile <- file(locationFilePath,"w")
+		writeLines(newLocationFileLines,con=locationFile)
+		close(locationFile)
+		
+	}
+	if(file.access(locationFilePath,2) != 0 & verbose){
+		print(paste("Would have saved the locations of annotation files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
+	}
 	
 	
 	#The following block is because I want users to both be able to submit vectors of probesets, and paths for files with probesets
@@ -1093,31 +1095,33 @@ getProbesetsFromRegionOfInterest <- function(annotation,chromosome,start,end,pyt
 		#since it seems the read was succesfull with this annotation name and these mpsToPsFile and transcriptClustersFile, 
 		#we will save the locations for future use
 		#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
+		#it was re-inserted because other it seems that other packages do it as well
+
 		#saving the mpsToPsFile and transcriptClustersFile locations for next time 
-#		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
-#		if(file.access(locationFilePath,2) == 0){
-#			locationFile <- file(locationFilePath,"r")
-#			locationFileLines <- readLines(locationFile)
-#			close(locationFile)
-#			splitLocationFileLines <- strsplit(locationFileLines,"\t")
-#			newLocationFileLines <- vector()
-#			for(line in splitLocationFileLines){
-#				keepline <- TRUE
-#				if( !(annotation == line[2] & line[1] %in% c("mpsToPsFile","transcriptClustersFile")) ){
-#					newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
-#				}
-#			}
-#			if(!is.null(mpsToPsFile))newLocationFileLines <- c(newLocationFileLines,paste("mpsToPsFile",annotation,mpsToPsFile,sep="\t"))
-#			if(!is.null(transcriptClustersFile))newLocationFileLines <- c(newLocationFileLines,paste("transcriptClustersFile",annotation,transcriptClustersFile,sep="\t"))
-#			
-#			locationFile <- file(locationFilePath,"w")
-#			writeLines(newLocationFileLines,con=locationFile)
-#			close(locationFile)
-#			
-#		}
-#		if(file.access(locationFilePath,2) != 0){
-#			print(paste("Would have saved the locations of mpsToPsFile and transcriptClustersFile files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
-#		}
+		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		if(file.access(locationFilePath,2) == 0){
+			locationFile <- file(locationFilePath,"r")
+			locationFileLines <- readLines(locationFile)
+			close(locationFile)
+			splitLocationFileLines <- strsplit(locationFileLines,"\t")
+			newLocationFileLines <- vector()
+			for(line in splitLocationFileLines){
+				keepline <- TRUE
+				if( !(annotation == line[2] & line[1] %in% c("mpsToPsFile","transcriptClustersFile")) ){
+					newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+				}
+			}
+			if(!is.null(mpsToPsFile))newLocationFileLines <- c(newLocationFileLines,paste("mpsToPsFile",annotation,mpsToPsFile,sep="\t"))
+			if(!is.null(transcriptClustersFile))newLocationFileLines <- c(newLocationFileLines,paste("transcriptClustersFile",annotation,transcriptClustersFile,sep="\t"))
+			
+			locationFile <- file(locationFilePath,"w")
+			writeLines(newLocationFileLines,con=locationFile)
+			close(locationFile)
+			
+		}
+		if(file.access(locationFilePath,2) != 0){
+			print(paste("Would have saved the locations of mpsToPsFile and transcriptClustersFile files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
+		}
 		
 		
 		
@@ -1233,30 +1237,31 @@ getMetaprobesetsFromRegionOfInterest <- function(annotation,chromosome,start,end
 	
 	#saving the transcriptClustersFile locations for next time 
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
-#	locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
-#	if(file.access(locationFilePath,2) == 0){
-#		locationFile <- file(locationFilePath,"r")
-#		locationFileLines <- readLines(locationFile)
-#		close(locationFile)
-#		splitLocationFileLines <- strsplit(locationFileLines,"\t")
-#		newLocationFileLines <- vector()
-#		for(line in splitLocationFileLines){
-#			
-#			if( !(annotation == line[2] & line[1] %in% c("transcriptClustersFile")) ){
-#				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
-#			}
-#		}
-#		
-#		newLocationFileLines <- c(newLocationFileLines,paste("transcriptClustersFile",annotation,transcriptClustersFile,sep="\t"))
-#		
-#		locationFile <- file(locationFilePath,"w")
-#		writeLines(newLocationFileLines,con=locationFile)
-#		close(locationFile)
-#		
-#	}
-#	if(file.access(locationFilePath,2) != 0){
-#		print(paste("Would have saved the locations of transcriptClustersFile files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
-#	}
+	#it was re-inserted because other it seems that other packages do it as well
+	locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+	if(file.access(locationFilePath,2) == 0){
+		locationFile <- file(locationFilePath,"r")
+		locationFileLines <- readLines(locationFile)
+		close(locationFile)
+		splitLocationFileLines <- strsplit(locationFileLines,"\t")
+		newLocationFileLines <- vector()
+		for(line in splitLocationFileLines){
+			
+			if( !(annotation == line[2] & line[1] %in% c("transcriptClustersFile")) ){
+				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+			}
+		}
+		
+		newLocationFileLines <- c(newLocationFileLines,paste("transcriptClustersFile",annotation,transcriptClustersFile,sep="\t"))
+		
+		locationFile <- file(locationFilePath,"w")
+		writeLines(newLocationFileLines,con=locationFile)
+		close(locationFile)
+		
+	}
+	if(file.access(locationFilePath,2) != 0){
+		print(paste("Would have saved the locations of transcriptClustersFile files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
+	}
 	
 	
 	
@@ -1476,37 +1481,38 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 	
 	#saving the aptCelExtract, cdf, pgf and clf locations for next time 
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
-#	if(file.access(locationFilePath,2) == 0){
-#		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
-#		locationFile <- file(locationFilePath,"r")
-#		locationFileLines <- readLines(locationFile)
-#		close(locationFile)
-#		splitLocationFileLines <- strsplit(locationFileLines,"\t")
-#		newLocationFileLines <- vector()
-#		#delete previous lines from this annotation
-#		for(line in splitLocationFileLines){
-#			keepline <- TRUE
-#			if("aptProbesetSummarizePath" == line[1])keepline <- FALSE
-#			if(annotation == line[2] & line[1] %in% c("cdfPath","clfPath","pgfPath"))keepline <- FALSE
-#			
-#			if(keepline){
-#				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
-#			}
-#		}	
-#		#add the new ones
-#		newLocationFileLines <- c(newLocationFileLines,paste("aptProbesetSummarizePath","all",aptProbesetSummarizePath,sep="\t"))
-#		if(!is.null(cdfPath))newLocationFileLines <- c(newLocationFileLines,paste("cdfPath",annotation,cdfPath,sep="\t"))
-#		if(!is.null(clfPath))newLocationFileLines <- c(newLocationFileLines,paste("clfPath",annotation,clfPath,sep="\t"))
-#		if(!is.null(pgfPath))newLocationFileLines <- c(newLocationFileLines,paste("pgfPath",annotation,pgfPath,sep="\t"))
-#		
-#		locationFile <- file(locationFilePath,"w")
-#		writeLines(newLocationFileLines,con=locationFile)
-#		close(locationFile)
-#		
-#	}
-#	if(file.access(locationFilePath,2) != 0 & verbose){
-#		print(paste("Would have saved the locations of annotation files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
-#	}
+	#it was re-inserted because other it seems that other packages do it as well
+	if(file.access(locationFilePath,2) == 0){
+		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFile <- file(locationFilePath,"r")
+		locationFileLines <- readLines(locationFile)
+		close(locationFile)
+		splitLocationFileLines <- strsplit(locationFileLines,"\t")
+		newLocationFileLines <- vector()
+		#delete previous lines from this annotation
+		for(line in splitLocationFileLines){
+			keepline <- TRUE
+			if("aptProbesetSummarizePath" == line[1])keepline <- FALSE
+			if(annotation == line[2] & line[1] %in% c("cdfPath","clfPath","pgfPath"))keepline <- FALSE
+			
+			if(keepline){
+				newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+			}
+		}	
+		#add the new ones
+		newLocationFileLines <- c(newLocationFileLines,paste("aptProbesetSummarizePath","all",aptProbesetSummarizePath,sep="\t"))
+		if(!is.null(cdfPath))newLocationFileLines <- c(newLocationFileLines,paste("cdfPath",annotation,cdfPath,sep="\t"))
+		if(!is.null(clfPath))newLocationFileLines <- c(newLocationFileLines,paste("clfPath",annotation,clfPath,sep="\t"))
+		if(!is.null(pgfPath))newLocationFileLines <- c(newLocationFileLines,paste("pgfPath",annotation,pgfPath,sep="\t"))
+		
+		locationFile <- file(locationFilePath,"w")
+		writeLines(newLocationFileLines,con=locationFile)
+		close(locationFile)
+		
+	}
+	if(file.access(locationFilePath,2) != 0 & verbose){
+		print(paste("Would have saved the locations of annotation files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
+	}
 	
 	
 	
