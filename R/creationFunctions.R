@@ -228,121 +228,26 @@ findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg18",
 
 
 
-#
-#checkSnpPositionInBiomart <- function(listOfSnps,genesymbol){
-#	#sanity check of the input using biomaRt. This function take the list of snps and the genesymbol
-#	#and checks to see if the gene exists, what the location of the gene is and if any of the given
-#	#snps are found in the region
-#	#returns a list of snpDatabaseData, geneDatabaseData, locationData for use with 
-#	
-#	if(!require(biomaRt))stop("This function requires the use of the biomaRt package")
-#	
-#	if(class(listOfSnps) != "character"){
-#		stop("This function takes only a character vector specifying SNPs names")	
-#	}
-#	ensembl = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-#	snp = useMart("snp", dataset = "hsapiens_snp")
-#	
-#	
-##	snpDatabaseData <- list(readLines(listOfSnps)[1])
-##	names(snpDatabaseData) <- "dataset_info"
-#	geneDatabaseData <- c(listDatasets(ensembl)[grep("hsapiens_gene_ensembl",listDatasets(ensembl)[,"dataset"]),])
-#	
-#	gene_data <- getGene(id=genesymbol,type="hgnc_symbol",mart=ensembl)
-#	scan_range  <-  10000 #how many bp to look for SNPs up- and downstream of the gene
-#	start <- gene_data[["start_position"]]-scan_range
-#	end <- gene_data[["end_position"]]+scan_range 
-#	chromosome <- gene_data[["chromosome_name"]]
-#	
-#	
-#	if(is.null(start)){
-#		print(paste("The given gene -",genesymbol,"- was not found in the biomaRt database at all"))
-#	}else{
-#		print(paste("The given gene -",genesymbol,"- was found in the biomaRt on chromosome",chromosome,"at pos",start+scan_range,"to",end-scan_range))
-#	}
-#	
-#	snps_retrieved_online <- getBM(
-#			c("refsnp_id", "allele", "chrom_start", "chrom_strand"), 
-#			filters = c("chr_name", "chrom_start","chrom_end"), 
-#			values = list(chromosome, start-scan_range, end+scan_range), 
-#			mart = snp)
-#	
-#	snps_fed_in <- listOfSnps
-#	
-#	
-#	print(paste(sum(snps_fed_in %in% snps_retrieved_online[,"refsnp_id"]),"of",length(snps_fed_in),"snps in the listOfSnps given are also found when downloading the region descriped from biomaRt SNP database."))
-#	print(paste("If less snps are found in the gene than requested originally it might be because SNPs outside of the region have been requested. At present only the gene-region plus/minus",scan_range,"bp are investigated"))
-#	
-#	return_value <- list(geneDatabaseData,gene_data)
-#	names(return_value) <- c("geneDatabaseData","locationData")
-#	return(return_value)
-#}	
-#
-
-setGeneric("addHapMapSnpPdata", function(object,listOfSnps) standardGeneric("addHapMapSnpPdata"))
-setMethod("addHapMapSnpPdata", "ExpressionSet",
-		function(object,listOfSnps){
-			# Takes an expressionset and the path for a SNP-file as downloaded from hapmap.
-			# decorates the expressionset with SNPs by using the specified name_translationFile
-			# This function is strictly for use with hapmap data and the GSE9372 dataset. 
-			# The reason it has to be special is that the GSE9372 dataset has different names than the hapmap
-			# individuals AND because it includes triplicates measurements of every sample.
-			# Reading ability for this could be included in the future, but I think it is too specific for now.
-			# NOTICE THAT THIS IS NOT EXPORTED TO THE NAMESPACE 
-			expressionset <- object
-			
-			print("This function is strictly for use with hapmap data and the GSE9372 dataset. Use addHapMapSnpPdata for more general uses. Also HapMaps Phase 1 & 2, B36 is best to use. Newer builds give warnings because they have been expanded.")
-			#library(Biobase)
-			
-			#should work with the file in the pacakge, but an (yes, obscure, we are not even in the namespace) option for providing it is also given. You never know what you will need.
-			if(!exists("name_translationFile")){
-				name_translationFile <- file.path(.path.package("GeneRegionScan"),"translationfiles","GSE9372_name_translation.txt")
-			}
-			name_translation <- read.table(name_translationFile,header=TRUE,row.names=1)
-			
-			
-			
-			
-			pdata_raw <- read.table(listOfSnps,skip=2, comment.char = "",header=TRUE,row.names=1)
-			
-			snp_data <- pdata_raw[,c("alleles","chrom","pos","strand","assembly.","center","protLSID","assayLSID","panelLSID","QCcode")]
-			pdata_raw <- t(pdata_raw[,!colnames(pdata_raw) %in% colnames(snp_data)])
-			
-			
-			pdata <- pdata_raw[0,]
-			for(samplename in colnames(exprs(expressionset))){
-				#if(!samplename %in% rownames(name_translation))stop(paste("Didn't find",samplename,"in the rownames of the name_translation"))
-				individual <- as.character(name_translation[samplename,"Individual"])
-				if(!individual %in% rownames(pdata_raw)){
-					warning(paste("The individual",individual,"was not found in the submitted list of SNPs. NA's was given as the value instead"))	
-					pdata <- rbind(pdata,NA)
-				}else{
-					pdata <- rbind(pdata,pdata_raw[individual,])
-				}
-			}
-			
-			rownames(pdata) <- colnames(exprs(expressionset))
-			pdata[pdata == "NN"] <- NA
-			
-			notes(expressionset)[["snp_data"]] <- snp_data
-			pData(expressionset) <- as.data.frame(pdata)
-			
-			
-			return(expressionset)
-		})
-
-
-
-setGeneric("addSnpPdata", function(object,listOfSnps) standardGeneric("addSnpPdata"))
+setGeneric("addSnpPdata", function(object,listOfSnps,individualNames="sampleNames") standardGeneric("addSnpPdata"))
 setMethod("addSnpPdata", "ExpressionSet",
-		function(object,listOfSnps){
+		function(object,listOfSnps,individualNames="sampleNames"){
 			# takes an expressionset and the path for a SNP-file. The SNP-file should have the same format as 
 			# files downloaded from hapmap.org
 			# The function then checks if all samplenames are present in the SNP-file and vice versa. If they are it
 			# decorates the expressionset with the new SNPs. It also checks for existing entries with the same name
 			# and if they are found it adds the extra SNPs to the this entry.
+			# optional argument individualNames can refer to a column in the pData to get individualIds (=whatever the listOfSnps call the individuals). Defaults to just sampleNames
 			
 			expressionset <- object
+			
+			if(individualNames == "sampleNames"){
+				individualNamesVector <- sampleNames(expressionset)
+			}else{
+				if(!individualNames %in% colnames(pData(expressionset))) stop(paste("The individualNames",individualNames,"was not found as a column name in the pData of the expressionset"))
+				individualNamesVector <- pData(expressionset)[,individualNames]
+			}
+			names(individualNamesVector) <- sampleNames(expressionset)
+			
 			pdata_raw <- read.table(listOfSnps,skip=2, comment.char = "",header=TRUE,row.names=1)
 			snp_data <- pdata_raw[,c("alleles","chrom","pos","strand","assembly.","center","protLSID","assayLSID","panelLSID","QCcode")]
 			pdata_raw <- t(pdata_raw[,!colnames(pdata_raw) %in% colnames(snp_data)])
@@ -350,32 +255,33 @@ setMethod("addSnpPdata", "ExpressionSet",
 			
 			
 			
-			if(!any(rownames(pdata_raw) %in% colnames(exprs(expressionset))))stop("None of the sample names in the listOfSnps file was found in the expressionset")
-			print(paste(sum(rownames(pdata_raw) %in% sampleNames(expressionset)),"of the",nrow(pdata_raw),"samplenames in the listOfSnps was found in the expressionset"))	
+			if(!any(rownames(pdata_raw) %in% individualNamesVector))stop("None of the sample names in the listOfSnps file was found in the expressionset")
+			print(paste(sum(rownames(pdata_raw) %in% individualNamesVector),"of the",nrow(pdata_raw),"samplenames in the listOfSnps was found in the expressionset"))	
 			
 			
 			for(snp in colnames(pdata_raw)){
 				genotype_vector <- vector()
 				if(snp %in% colnames(pData(expressionset))){
 					genotype_first <- expressionset[[snp]]
-					for(sample in sampleNames(expressionset)){
-						if(sample %in% rownames(pdata_raw)){
-							if(!as.character(pdata_raw[sample,snp]) == "NN"){
-								if(is.na(pData(expressionset)[sample,snp])){
-									genotype_vector <- c(genotype_vector,as.character(pdata_raw[sample,snp]))	
+					for(sampleName in names(individualNamesVector)){
+						individualName <- individualNamesVector[sampleName]
+						if(individualName %in% rownames(pdata_raw)){
+							if(!as.character(pdata_raw[individualName,snp]) == "NN"){
+								if(is.na(pData(expressionset)[sampleName,snp])){
+									genotype_vector <- c(genotype_vector,as.character(pdata_raw[individualName,snp]))	
 								}else{
-									if(pData(expressionset)[sample,snp]  !=  pdata_raw[sample,snp]){
-										entry_1<-as.character(pData(expressionset)[sample,snp])
-										entry_2<-as.character(pdata_raw[sample,snp])
-										print(paste("WARNING: the expressionset already contained the entry",entry_1,"for",snp,"and",sample,"but the listOfSnps had",entry_2,"- the original has been preserved"))
+									if(pData(expressionset)[sampleName,snp]  !=  pdata_raw[individualName,snp]){
+										entry_1<-as.character(pData(expressionset)[sampleName,snp])
+										entry_2<-as.character(pdata_raw[individualName,snp])
+										print(paste("WARNING: the expressionset already contained the entry",entry_1,"for",snp,"and",individualName,"but the listOfSnps had",entry_2,"- the original has been preserved"))
 									}
-									genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sample,snp]))
+									genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sampleName,snp]))
 								}
 							}else{
-								genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sample,snp]))
+								genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sampleName,snp]))
 							}
 						}else{
-							genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sample,snp]))
+							genotype_vector <- c(genotype_vector,as.character(pData(expressionset)[sampleName,snp]))
 						}
 					}
 					expressionset[[snp]] <- as.factor(genotype_vector)
@@ -387,10 +293,11 @@ setMethod("addSnpPdata", "ExpressionSet",
 						print(paste(snp,"was already found in the given expressionset. It had",first_num,"NA entries to begin with. Now it has",last_num))
 					}
 				}else{
-					for(sample in sampleNames(expressionset)){
-						if(sample %in% rownames(pdata_raw)){
-							if(!as.character(pdata_raw[sample,snp]) == "NN"){
-								genotype_vector <- c(genotype_vector,as.character(pdata_raw[sample,snp]))
+					for(sampleName in names(individualNamesVector)){
+						individualName <- as.character(individualNamesVector[sampleName])
+						if(individualName %in% rownames(pdata_raw)){
+							if(!as.character(pdata_raw[individualName,snp]) == "NN"){
+								genotype_vector <- c(genotype_vector,as.character(pdata_raw[individualName,snp]))
 							}else{
 								genotype_vector <- c(genotype_vector,NA)
 							}
