@@ -9,11 +9,12 @@
 Function that will add genotypes to an ExpressionSet when given a data file with genotypes in the same format as outputted by http://www.hapmap.org.
 }
 \usage{
-    addSnpPdata(object, listOfSnps)
+    addSnpPdata(object, listOfSnps, individualNames="sampleNames")
 }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
   \item{listOfSnps}{A character string giving the path of a file containing SNP data in the same format as used by the export function of www.hapmap.org.}
+  \item{individualNames}{An optional character string giving the column name of a pData entry that holds the individual names as given in the listOfSnps. This defaults to using the sampleNames, and is useful in cases with replicate or triplicate samples}
 }
 \value{The same ProbeLevelSet or ExpressionSet given as argument, but with the SNP type data added to the pData and with the extra information of the listOfSnps file added to the notes section.}
 \details{
