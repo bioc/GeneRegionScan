@@ -1336,7 +1336,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 			stop(paste("The metaProbeSetsFile was given as",metaProbeSetsFile,"but this is a directory"))
 		}
 		
-		metaProbeSetline<-paste(" -m ",metaProbeSetsFile," ",sep="")
+		metaProbeSetline<-paste(" -m ",shQuote(metaProbeSetsFile)," ",sep="")
 	}else{
 		metaProbeSetline<-""
 	}
