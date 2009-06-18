@@ -1,14 +1,13 @@
 Package: GeneRegionScan
-Version: 1.1.0
-Date: 2008-11-07
+Version: 1.1.1
+Date: 2009-06-17
 Title: GeneRegionScan
 Author: Lasse Folkersen, Diego Diez
 Maintainer: Lasse Folkersen <lasse.folkersen@ki.se>
-Depends: methods, Biobase, Biostrings
-Imports: Biobase, affxparser, RColorBrewer, Biostrings
+Depends: methods, Biobase (>= 2.5.3), Biostrings
+Imports: Biobase (>= 2.5.3), affxparser, RColorBrewer, Biostrings
 Suggests: BSgenome, affy, AnnotationDbi
 LazyLoad: yes
 Description: A package with focus on analysis of discrete regions of the genome. This package is useful for investigation of one or a few genes using Affymetrix data, since it will extract probe level data using the Affymetrix Power Tools application and wrap these data into a ProbeLevelSet. A ProbeLevelSet directly extends the expressionSet, but includes additional information about the sequence of each probe and the probe set it is derived from. The package includes a number of functions used for plotting these probe level data as a function of location along sequences of mRNA-strands. This can be used for analysis of variable splicing, and is especially well suited for use with exon-array data.  
 License: GPL version 2 or newer
 biocViews: Microarray, DataImport, Statistics, SNP, OneChannel, Visualization
-
