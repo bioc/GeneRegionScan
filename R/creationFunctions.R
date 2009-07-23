@@ -39,7 +39,10 @@ setMethod("translateSampleNames", "ExpressionSet",
 			}
 			
 			if(! all(translationFile[,from] %in% sampleNames(expressionset))){
-				stop(paste("Some of the samples in the given expressionset are not present in the",from,"column of the translationFile"))
+				
+				missing<-translationFile[,from][! translationFile[,from] %in% sampleNames(expressionset)]
+				
+				stop(paste(length(missing),"samples in the given expressionset are not present in the",from,"column of the translationFile:",paste(missing,collapse=", ")))
 			}
 			
 			
