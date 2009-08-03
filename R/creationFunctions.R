@@ -1508,7 +1508,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 	}
 	
 	title <- "ExpressionSet"
-	abstract <- paste("This ExpressionSet was generated using the getLocalMetaprobeIntensities function of the bioconductor package geneRegionScan, directly from cel files in",celfilePath,"on",date())
+	abstract <- paste("This ExpressionSet was generated using the getLocalMetaprobeIntensities function of the bioconductor package geneRegionScan, using",analysis,"analysis directly from cel files in",celfilePath,"on",date())
 	experimentData  <-  new(
 			"MIAME", 
 			name = "", 
