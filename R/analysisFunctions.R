@@ -495,7 +495,7 @@ exonStructure <- function(mrna,genome,maxMismatch=4){
 		}
 		if(length(exonstructure_here) == 1){
 			exonstructure_here <- c(NA,NA,NA)
-			print(paste("Did not find a match in the mrna for exon",i,". If this is essential try increasing the maxMismatch number."))	
+			print(paste("Did not find a match in the mrna for exon",i,". If this is essential try using the exonStructure and increasing the maxMismatch number."))	
 		}
 		exonstructure[i,] <- exonstructure_here
 	}
