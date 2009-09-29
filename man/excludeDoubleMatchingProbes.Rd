@@ -30,7 +30,9 @@ which can be used for purposes that are more flexible (although that function re
 At present, there is no functionality to check matches with known SNP or known splice forms taken into account.
 }
 \author{Lasse Folkersen}
-\seealso{\code{\link{findSequenceInGenome}}, \code{\link[BSgenome]{BSgenome}}, \code{\link{excludeDoubleMatchingProbes}}}
+\seealso{\code{\link{findSequenceInGenome}},
+  \code{\link[BSgenome:BSgenome-class]{BSgenome}},
+  \code{\link{excludeDoubleMatchingProbes}}} 
 \examples{
 
 	\dontrun{
