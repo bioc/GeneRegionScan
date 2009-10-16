@@ -7,6 +7,8 @@ setMethod("doProbeLinear", "ExpressionSet",
 			# outputs a matrix with the following data for each probe set "p-value","slope","intercept","slope/mean", and "anova"
 			# This function is not meant to be run by the user. Only to be called from elsewhere.
 			
+            oldc <- Sys.getlocale("LC_COLLATE")
+            on.exit(Sys.setlocale("LC_COLLATE", oldc))
 			Sys.setlocale("LC_COLLATE", "C")
 			
 			expressionset <- object
@@ -380,6 +382,8 @@ setMethod("plotOnGene", "ExpressionSet",
 			
 			if(!is.null(label)){
 				factors <- levels(pData(expressionset)[,label])
+                oldc <- Sys.getlocale("LC_COLLATE")
+                on.exit(Sys.setlocale("LC_COLLATE", oldc))
 				Sys.setlocale("LC_COLLATE", "C")
 				factors <- sort(factors)
 				
