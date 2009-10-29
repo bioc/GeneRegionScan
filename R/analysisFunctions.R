@@ -488,14 +488,14 @@ exonStructure <- function(mrna,genome,maxMismatch=4){
 	mrna <- DNAString(mrna[[1]][["seq"]][1])
 	for(i in 1:length(genome)){
 		exon <- DNAString(genome[[i]][["seq"]][1])
-		exonrownames[i] <- sub(" .+$","",genome[[i]][["desc"]][1])
+#		exonrownames[i] <- sub(" .+$","",genome[[i]][["desc"]][1])
 		
 		match <- matchPattern(exon,mrna,max.mismatch=maxMismatch)
 		if(length(match@start) > 1){
 			warning(paste("WARNING: exon",i,"was found to match",length(match@start),"times on the mrna given. Only the first match have been used. This should be further investigated."))	
-			exonstructure_here <- c(match@start[1],match@width[1]+match@start[1],1+as.numeric(sub("^.+_","",exonrownames[i])))
+			exonstructure_here <- c(match@start[1],match@width[1]+match@start[1],i)
 		}else{
-			exonstructure_here <- c(match@start,match@width+match@start,1+as.numeric(sub("^.+_","",exonrownames[i])))
+			exonstructure_here <- c(match@start,match@width+match@start,i)
 		}
 		if(length(exonstructure_here) == 1){
 			exonstructure_here <- c(NA,NA,NA)
@@ -503,7 +503,7 @@ exonStructure <- function(mrna,genome,maxMismatch=4){
 		}
 		exonstructure[i,] <- exonstructure_here
 	}
-	rownames(exonstructure) <- exonrownames
+#	rownames(exonstructure) <- exonrownames
 	colnames(exonstructure) <- c("start","end","exonnumber")
 	
 	for(i in 1:nrow(exonstructure)){
@@ -589,13 +589,13 @@ setMethod("geneRegionScan", "ExpressionSet",
 
 
 
-readGeneInput <- function(gene,genename=NULL){
+readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 #Function that will take a number of genes either as a vector of characters, a path to a fasta format file, as a vector of DNAstrings or as a readFASTA format. It will then output them in FASTA format for use with
 #other programs. Optional argument genename forces a new name
 	
 	if(class(gene) == "character" & (length(grep("/",gene)) > 0 | length(grep("\\\\",gene,extended=FALSE)) > 0)){
 		if(file.exists(gene)){
-			print(paste("Received what was interpreted as the path to a fasta format gene:",gene))
+			if(verbose)print(paste("Received what was interpreted as the path to a fasta format gene:",gene))
 			#library(Biostrings)
 			gene <- readFASTA(gene,strip.desc=FALSE)
 		}else{
@@ -653,7 +653,7 @@ readGeneInput <- function(gene,genename=NULL){
 		for(i in 1:length(gene)){
 			if(is.null(gene[[i]][["desc"]])){
 				gene[[i]][["desc"]] <- "Unknown genename"
-				print("A gene was processed for which no name was found in fasta-format, and no name was explicitly given by 'genename' variable. The name 'Unknown genename' was assigned.")
+				if(verbose)print("A gene was processed for which no name was found in fasta-format, and no name was explicitly given by 'genename' variable. The name 'Unknown genename' was assigned.")
 			}
 		}
 	}
