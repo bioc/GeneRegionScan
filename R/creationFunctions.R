@@ -1531,10 +1531,8 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 
 
 
-
-
-getProbesetsFromMetaprobesets <- function(annotation,metaprobesets,pythonPath=NULL,mpsToPsFile=NULL){
-	#function that simply gets the probesets from the a given set of metaprobesets
+getProbesetsFromMetaprobeset <- function(annotation,metaprobesets,pythonPath=NULL,mpsToPsFile=NULL){
+	
 	
 	if(is.null(mpsToPsFile)){
 		#Will check locations.txt if this
@@ -1606,7 +1604,7 @@ getProbesetsFromMetaprobesets <- function(annotation,metaprobesets,pythonPath=NU
 		writeLines(python_script,con=python_file)
 		close(python_file)
 		python_file_address <- file.path(getwd(),"tempscript.py")
-		system(paste(shQuote(pythonPath),shQuote(python_file_address),shQuote(mpsToPsFile),metaprobesets))
+		system(paste(shQuote(pythonPath),shQuote(python_file_address),shQuote(mpsToPsFile),paste(metaprobesets,collapse=" ")))
 		if(!file.exists("probesets_of_interest.txt")){
 			unlink(python_file_address)
 			stop("R could not read the parsed data from Python. The cause of this error can probably be found in the error output a few lines above in the line beginning with Exception:")
@@ -1656,4 +1654,3 @@ getProbesetsFromMetaprobesets <- function(annotation,metaprobesets,pythonPath=NU
 	
 	return(probesets_of_interest)
 }
-
