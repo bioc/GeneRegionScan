@@ -1527,3 +1527,133 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 	file.remove(cel_list_path)
 	return(expressionset)
 }
+
+
+
+
+
+
+getProbesetsFromMetaprobesets <- function(annotation,metaprobesets,pythonPath=NULL,mpsToPsFile=NULL){
+	#function that simply gets the probesets from the a given set of metaprobesets
+	
+	if(is.null(mpsToPsFile)){
+		#Will check locations.txt if this
+		#annotation has previously been run with mpsToPsFile and transcriptClustersFile.
+		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		if(file.access(locationFilePath,4) == 0){
+			locationFile <- file(locationFilePath,"r")
+			locationFileLines <- readLines(locationFile)
+			close(locationFile)
+			splitLocationFileLines <- strsplit(locationFileLines,"\t")
+			for(line in splitLocationFileLines){
+				if(annotation == line[2]){
+					if("mpsToPsFile" == line[1])mpsToPsFile <- line[3]
+				}
+			}
+			if(!is.null(mpsToPsFile) ){
+				print(paste("mpsToPsFile given as null, but the annotation",annotation,"has used this file before:",mpsToPsFile))
+			}
+			
+		}
+		if(is.null(mpsToPsFile)){
+			stop("You need to specify a mpsToPsFile")
+		}
+		
+	}
+	
+	if(!is.null(mpsToPsFile) ){
+		
+		
+		if(!file.exists(mpsToPsFile))stop(paste("mpsToPsFile file not found at",mpsToPsFile))
+		
+		if(is.null(pythonPath)){
+			pythonPath <- checkForFileInPath(c("python","python.exe"))
+			if(length(pythonPath) > 0){
+				pythonPath <- pythonPath[1]
+			}else{
+				stop("Could not find python in path and it was not given as an argument. Do either")
+			}
+		}
+		
+		
+		python_script <- c("def main(argv):",
+				"    import os",
+				"    mpsToPsFile = argv[1]",
+				"    metaprobesets = argv[2:(len(argv))]",
+				"    mps_to_ps_file = open(mpsToPsFile,'r')",
+				"    mps_to_ps = mps_to_ps_file.readlines()",
+				"    mps_to_ps_file.close()",
+				"    probesets_of_interest = []",
+				"    for mps_to_ps_entry in mps_to_ps:",
+				"        if mps_to_ps_entry[0] is not '#':",
+				"            split_mps_to_ps_entry = mps_to_ps_entry.split('\t')",
+				"            if split_mps_to_ps_entry[0] in metaprobesets:",
+				"                probesets_of_interest_here = split_mps_to_ps_entry[2].split(' ')",
+				"                probesets_of_interest = probesets_of_interest + probesets_of_interest_here",
+				"    del mps_to_ps",
+				"    probesets_of_interest = dict(map(lambda i: (i,1),probesets_of_interest)).keys()",
+				"    output = open(os.path.join(os.getcwd(),'probesets_of_interest.txt'),'w')",
+				"    output.write('probeset_id\\n')",
+				"    for probeset_of_interest in probesets_of_interest:",
+				"        if len(probeset_of_interest)>0:",
+				"            output.write(probeset_of_interest+'\\n')",
+				"    output.close()",
+				"if __name__ == '__main__':",
+				"    from sys import argv",
+				"    main(argv)","","")
+		
+		python_file <- file(description="tempscript.py","w")
+		writeLines(python_script,con=python_file)
+		close(python_file)
+		python_file_address <- file.path(getwd(),"tempscript.py")
+		system(paste(shQuote(pythonPath),shQuote(python_file_address),shQuote(mpsToPsFile),metaprobesets))
+		if(!file.exists("probesets_of_interest.txt")){
+			unlink(python_file_address)
+			stop("R could not read the parsed data from Python. The cause of this error can probably be found in the error output a few lines above in the line beginning with Exception:")
+		}
+		probeset_file <- file("probesets_of_interest.txt","r")
+		probesets_of_interest <- readLines(probeset_file)
+		close(probeset_file)
+		probesets_of_interest <- probesets_of_interest[2:length(probesets_of_interest)]
+		unlink("probesets_of_interest.txt")
+		unlink(python_file_address)
+		
+		
+		
+		#since it seems the read was succesfull with this annotation name and these mpsToPsFile, 
+		#we will save the locations for future use
+		#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
+		#it was re-inserted because other it seems that other packages do it as well
+		
+		#saving the mpsToPsFilelocations for next time 
+		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		if(file.access(locationFilePath,2) == 0){
+			locationFile <- file(locationFilePath,"r")
+			locationFileLines <- readLines(locationFile)
+			close(locationFile)
+			splitLocationFileLines <- strsplit(locationFileLines,"\t")
+			newLocationFileLines <- vector()
+			for(line in splitLocationFileLines){
+				if( !(annotation == line[2] & line[1] == "mpsToPsFile") ){
+					newLocationFileLines <- c(newLocationFileLines,paste(line[1],line[2],line[3],sep="\t"))
+				}
+			}
+			if(!is.null(mpsToPsFile))newLocationFileLines <- c(newLocationFileLines,paste("mpsToPsFile",annotation,mpsToPsFile,sep="\t"))
+			
+			
+			locationFile <- file(locationFilePath,"w")
+			writeLines(newLocationFileLines,con=locationFile)
+			close(locationFile)
+			
+		}
+		if(file.access(locationFilePath,2) != 0){
+			print(paste("Would have saved the locations of mpsToPsFile and transcriptClustersFile files for",annotation,"for next time, but did not have write permission for the configfile",locationFilePath))
+		}
+		
+		
+		
+	}
+	
+	return(probesets_of_interest)
+}
+
