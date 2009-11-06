@@ -6,7 +6,7 @@ importFrom(Biostrings, matchPattern, readFASTA, DNAString, XStringViews, complem
 importClassesFrom(Biostrings, PDict, MIndex)
 exportClasses(ProbeLevelSet)
 exportMethods(getSequence,translateSampleNames,plotOnGene,excludeDoubleMatchingProbes,addSnpPdata,geneRegionScan,plotCoexpression)
-export(exonStructure,findSequenceInGenome,getMetaprobesetsFromRegionOfInterest,getLocalMetaprobeIntensities,getServerProbeIntensities,getLocalProbeIntensities,getProbesetsFromRegionOfInterest)
+export(exonStructure,findSequenceInGenome,getMetaprobesetsFromRegionOfInterest,getLocalMetaprobeIntensities,getServerProbeIntensities,getLocalProbeIntensities,getProbesetsFromRegionOfInterest,getProbesetsFromMetaprobeset)
 
 
 
