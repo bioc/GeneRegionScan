@@ -593,7 +593,7 @@ readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 #Function that will take a number of genes either as a vector of characters, a path to a fasta format file, as a vector of DNAstrings or as a readFASTA format. It will then output them in FASTA format for use with
 #other programs. Optional argument genename forces a new name
 	
-	if(class(gene) == "character" & (length(grep("/",gene)) > 0 | length(grep("\\\\",gene,extended=FALSE)) > 0)){
+	if(class(gene) == "character" & (length(grep("/",gene)) > 0 | length(grep("\\\\",gene,fixed=TRUE)) > 0)){
 		if(file.exists(gene)){
 			if(verbose)print(paste("Received what was interpreted as the path to a fasta format gene:",gene))
 			#library(Biostrings)

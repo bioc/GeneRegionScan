@@ -130,7 +130,7 @@ findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg18",
 	
 	
 	genome_name <- sub("BSgenome.","",genome)
-	genome_name <- sub("\\..*","",genome_name,extended=FALSE)
+	genome_name <- sub("\\..*","",genome_name,fixed=TRUE)
 	chr_names <- seqnames(get(genome_name))
 	chr_names <- chr_names[-grep("_", chr_names)]
 	
