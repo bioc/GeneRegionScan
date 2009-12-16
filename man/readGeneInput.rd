@@ -7,11 +7,12 @@
 Internal function that will standardise the input of the many different form of sequences that can be used in Bioconductor.
 }
 \usage{
-    readGeneInput(gene, genename=NULL)
+    readGeneInput(gene, genename=NULL, verbose=TRUE)
 }
 \arguments{
   \item{gene}{}
   \item{genename}{}
+  \item{verbose}{}
 }
 \value{A list of all sequences and their names, in exactly the same format as obtained with the \link[Biostrings]{readFASTA} function of the Biostrings package.}
 \details{This function is not meant to be run directly by the user. It will take a number of genes either as a vector 

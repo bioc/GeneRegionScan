@@ -1,13 +1,13 @@
 
-\name{getProbesetsFromMetaprobesets}
-\alias{getProbesetsFromMetaprobesets}
+\name{getProbesetsFromMetaprobeset}
+\alias{getProbesetsFromMetaprobeset}
 
 \title{Get Probeset IDs From metaprobeset IDs}
 \description{
 Function that return the probesets mapping to a given set of metaprobesets.
 }
 \usage{
-    getProbesetsFromMetaprobesets(annotation, metaprobesets, pythonPath=NULL, transcriptClustersFile=NULL, mpsToPsFile=NULL)
+    getProbesetsFromMetaprobeset(annotation, metaprobesets, pythonPath=NULL, transcriptClustersFile=NULL, mpsToPsFile=NULL)
 }
 \arguments{
   \item{annotation}{A characther string giving the type of array for which probesets are needed. Will be used to load the .db file from bioconductor. Optional if mps to ps and transcript cluster file is given.}
@@ -30,7 +30,7 @@ Alternatively this data can just as well be retrieved from the web, but in some 
 
 	\dontrun{
 	#must supply mpsToPsFile and transcriptClustersFile for this to work
-	probesets<-getProbesetsFromMetaprobesets("notusedhere", c("3218528","2423669"), transcriptClustersFile=transcriptClustersFile, mpsToPsFile=mpsToPsFile)
+	probesets<-getProbesetsFromMetaprobeset("notusedhere", c("3218528","2423669"), transcriptClustersFile=transcriptClustersFile, mpsToPsFile=mpsToPsFile)
 	}
 }
 \keyword{documentation}
