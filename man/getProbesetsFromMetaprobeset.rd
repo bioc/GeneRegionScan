@@ -7,13 +7,12 @@
 Function that return the probesets mapping to a given set of metaprobesets.
 }
 \usage{
-    getProbesetsFromMetaprobeset(annotation, metaprobesets, pythonPath=NULL, transcriptClustersFile=NULL, mpsToPsFile=NULL)
+    getProbesetsFromMetaprobeset(annotation, metaprobesets, pythonPath=NULL, mpsToPsFile=NULL)
 }
 \arguments{
   \item{annotation}{A characther string giving the type of array for which probesets are needed. Will be used to load the .db file from bioconductor. Optional if mps to ps and transcript cluster file is given.}
   \item{metaprobesets}{A vector of characters giving the metaprobeset IDs for which to find the probe set IDs.}
   \item{pythonPath}{Optional character string with the path for Python software. This is only needed for exon arrays. If Python is in path this will be recognised automatically. Python can be downloaded from http://www.python.org.}
-  \item{transcriptClustersFile}{The location of a transcript cluster file such as HuEx-1\_0-st-v2.na26.hg18.transcript.csv. These can be downloaded from http://www.affymetrix.com.}
   \item{mpsToPsFile}{The location of a transcript cluster file such as HuEx-1\_0-st-v2.r2.dt1.hg18.full.mps. These can be downloaded from http://www.affymetrix.com. Best to use the "full" type file.}
 }
 \value{A list of all probesets found in the given metaprobesets.}
