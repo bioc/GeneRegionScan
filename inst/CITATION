@@ -1,5 +1,5 @@
 citEntry(entry="Article",
-  author ="Lasse Folkersen, Diego Diez, Craig E. Wheelock, Jesper Z. Haeggström, Susumu Goto, Per Eriksson, Anders Gabrielsen",
+  author ="Lasse Folkersen, Diego Diez, Craig E. Wheelock, Jesper Z. Haeggstr\"{o}m, Susumu Goto, Per Eriksson, Anders Gabrielsen",
 title ="GeneRegionScan: a Bioconductor package for probe level analysis of specific, small regions of the genome",
   journal =      "Bioinformatics",
   volume =       "NA",
