@@ -786,10 +786,10 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 	
 	if(verbose)print("Now importing pgf-parsing data and intensity file")
 	intensity_file <- paste(getwd(),.Platform[["file.sep"]],"intensity_file.txt",sep="")
-	intensity <- try(read.table(intensity_file,header=TRUE,row.names=1),silent=TRUE)
+	intensity <- try(read.table(intensity_file,header=TRUE,row.names=1,sep="\t"),silent=TRUE)
 	
 	if(class(intensity) == "try-error"){
-		intensity <- try(read.table(intensity_file,header=TRUE),silent=TRUE)
+		intensity <- try(read.table(intensity_file,header=TRUE,sep="\t"),silent=TRUE)
 		if(class(intensity) == "try-error"){
 			stop("There was an error reading the intensity file from apt. The cause is unknown")
 		}else{
