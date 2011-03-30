@@ -1,14 +1,14 @@
 
 setGeneric("doProbeLinear", function(object,label,testType="linear model") standardGeneric("doProbeLinear"))
 setMethod("doProbeLinear", "ExpressionSet",
-		function(object,label,testType="linear model"){
+		plotStatisticsfunction(object,label,testType="linear model"){
 			# Function to calculate if genes are interesting using linear models 
 			# takes an expressionset and a label
 			# outputs a matrix with the following data for each probe set "p-value","slope","intercept","slope/mean", and "anova"
 			# This function is not meant to be run by the user. Only to be called from elsewhere.
 			
-            oldc <- Sys.getlocale("LC_COLLATE")
-            on.exit(Sys.setlocale("LC_COLLATE", oldc))
+			oldc <- Sys.getlocale("LC_COLLATE")
+			on.exit(Sys.setlocale("LC_COLLATE", oldc))
 			Sys.setlocale("LC_COLLATE", "C")
 			
 			expressionset <- object
@@ -195,9 +195,9 @@ setMethod("plotStatistics", "ExpressionSet",
 		})
 
 
-setGeneric("plotOnGene", function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,yMax=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all") standardGeneric("plotOnGene"))
+setGeneric("plotOnGene", function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",ylab="expression") standardGeneric("plotOnGene"))
 setMethod("plotOnGene", "ExpressionSet",
-		function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,yMax=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all"){
+		function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",ylab="expression"){
 			# This function is an updated version of plotOnGene 
 			# This functions takes the following input:
 			#  * "expressionset" the expression of all probes and their associated pData. Rownames of probeData and featurenames of expressionset should be the same.
@@ -305,7 +305,7 @@ setMethod("plotOnGene", "ExpressionSet",
 			
 			probe <- XStringViews(probeData[,"sequence"],"DNAString")
 			
-
+			
 			
 			
 			positionVector <- vector()
@@ -347,7 +347,7 @@ setMethod("plotOnGene", "ExpressionSet",
 				}
 			}
 			
-						
+			
 			
 			
 			
@@ -357,20 +357,23 @@ setMethod("plotOnGene", "ExpressionSet",
 			
 			
 			xlim <- c(interval[1],interval[2])
-			ylim <- c(0,max(exprs(expressionset[names(positionVector)])))
+			if(is.null(ylim)){
+				if(summaryType == "dots"){ylim <- c(0,max(exprs(expressionset[names(positionVector),])))	}
+				if(summaryType == "mean"){ylim <- c(0,1.1*max(apply(exprs(expressionset[names(positionVector),]),1,mean)))}
+				if(summaryType == "median"){ylim <- c(0,1.1*max(apply(exprs(expressionset[names(positionVector),]),1,median)))}
+				if(summaryType == "quartiles"){ylim <- c(0,max(apply(exprs(expressionset[names(positionVector),]),1,quantile)["75%",]))}
+				
+#				ylim <- c(0,max(exprs(expressionset[names(positionVector)])))
+			}
+
 			
-			if(summaryType == "dots"){ylim <- c(0,max(exprs(expressionset[names(positionVector),])))	}
-			if(summaryType == "mean"){ylim <- c(0,1.1*max(apply(exprs(expressionset[names(positionVector),]),1,mean)))}
-			if(summaryType == "median"){ylim <- c(0,1.1*max(apply(exprs(expressionset[names(positionVector),]),1,median)))}
-			if(summaryType == "quartiles"){ylim <- c(0,max(apply(exprs(expressionset[names(positionVector),]),1,quantile)["75%",]))}
-			if(!is.null(yMax)){ylim <- c(0,yMax)}
 			
 			#ylim <- c(0,1)
 			##plot frame
 			plot.default(1,
 					type="n",
 					xlab="bp",
-					ylab="expression",
+					ylab=ylab,
 					#yaxt="n",
 					frame=FALSE,
 					xlim=xlim,
@@ -382,8 +385,8 @@ setMethod("plotOnGene", "ExpressionSet",
 			
 			if(!is.null(label)){
 				factors <- levels(pData(expressionset)[,label])
-                oldc <- Sys.getlocale("LC_COLLATE")
-                on.exit(Sys.setlocale("LC_COLLATE", oldc))
+				oldc <- Sys.getlocale("LC_COLLATE")
+				on.exit(Sys.setlocale("LC_COLLATE", oldc))
 				Sys.setlocale("LC_COLLATE", "C")
 				factors <- sort(factors)
 				
@@ -469,7 +472,7 @@ setMethod("plotOnGene", "ExpressionSet",
 
 
 
-exonStructure <- function(mrna,genome,maxMismatch=4){
+exonStructure <- function(mrna,genome,maxMismatch=4,y=0){
 	# This program draws the exon structure on a gene
 	# The genome variable is the sequence as downloaded through UCSC genome browser with exon structure splitted up.
 	#
@@ -508,10 +511,10 @@ exonStructure <- function(mrna,genome,maxMismatch=4){
 	
 	for(i in 1:nrow(exonstructure)){
 		if(!is.na(exonstructure[i,"start"])){
-			lines(x=c(exonstructure[i,"start"],exonstructure[i,"end"]),y=c(0,0))
-			points(x=exonstructure[i,"start"],y=0,pch="|")
-			points(x=exonstructure[i,"end"],y=0,pch="|")
-			text(x=mean(c(exonstructure[i,"start"],exonstructure[i,"end"])),y=0,labels=as.character(exonstructure[i,"exonnumber"]),cex=0.5,pos=1)
+			lines(x=c(exonstructure[i,"start"],exonstructure[i,"end"]),y=c(y,y))
+			points(x=exonstructure[i,"start"],y=y,pch="|")
+			points(x=exonstructure[i,"end"],y=y,pch="|")
+			text(x=mean(c(exonstructure[i,"start"],exonstructure[i,"end"])),y=y,labels=as.character(exonstructure[i,"exonnumber"]),cex=0.5,pos=1)
 		}
 	}
 	
@@ -740,8 +743,8 @@ setMethod("plotCoexpression", "ExpressionSet",
 			if(debugging)x <- vector()
 			for(i in 1:length(gene)){ 
 				
-	
-	
+				
+				
 				
 				
 				positionVector_here <- vector()

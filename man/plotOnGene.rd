@@ -9,7 +9,7 @@ Function that will investigate the probe level intensity of probes as a function
 }
 \usage{
     plotOnGene(object, gene, probeData=NULL, label=NULL, genename=NULL, summaryType="median",
-    interval=NULL, yMax=NULL, testType=NULL, forcePValue=FALSE, verbose=TRUE, cutoff=0.2, directions="all")
+    interval=NULL, ylim=NULL, testType=NULL, forcePValue=FALSE, verbose=TRUE, cutoff=0.2, directions="all", ylab="expression")
 }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
@@ -19,12 +19,13 @@ Function that will investigate the probe level intensity of probes as a function
   \item{genename}{Optional character string specifying a gene name to include in the plot. If not included and a FASTA sequence is given, it will default to the name in the FASTA sequence. Otherwise, it will default to 'Unknown genename'.}
   \item{summaryType}{Character string specifying one of the following summary methods: 'median', 'mean', 'quartiles' or 'dots' (i.e. no summary). Specifies how all the sample values or all the samples values in a group if 'label' is given, should be summarised. Defaults to 'median'.}
   \item{interval}{Optional vector of two integers of bp positions. If given, the plot will only include the sequence from gene in the given interval. The x-axis annotation is preserved from original, so this is useful for zooming on specific regions.}
-  \item{yMax}{Optional integer. If given, this value will be the maximal value on the y-axis. This is useful if a few outlier probes have very high intensity values, as the default is to set the yMax to the maximal intensity value.}
+  \item{ylim}{Optional integer. If given, this value will be the maximal value on the y-axis. This is useful if a few outlier probes have very high intensity values, as the default is to set the yMax to the maximal intensity value.}
   \item{testType}{Optional character string, defining a statistic procedure to identify especially interesting probes. Can be either 'linear model', 'students' or 'wilcoxons'. If given, a label must also be specified. In this case the \link{plotStatistics} function will be called and probes that are significantly changed between the groups in label at the P-value set in cutoff (see cutoff argument) will be circled.}
   \item{forcePValue}{Logical. Is used if the testType argument is used. If TRUE all significantly changed probes have P-value given on the plot. If FALSE, only plots with less than 10 significant probes write P-values. Plots can become very cluttered with data if set to TRUE}
   \item{verbose}{TRUE or FALSE}
   \item{cutoff}{Integer specifying at what p-value probes should be circled when using the 'testType' variable. Defaults to 0.2. For cutoffs higher than 0.05, all probes with P >0.05 will be circled in grey instead of black.}
   \item{directions}{A character vector of the matching-directions that should be scanned (which combinations of complementary and reverse). Defaults to "all" which is shorthand for all possible directions, but can take anything from: c("matchForwardSense", "matchForwardAntisense", "matchReverseSense", "matchReverseAntisense")}
+  \item{ylab}{Label of Y-axis as in default plots}
   
     
 }

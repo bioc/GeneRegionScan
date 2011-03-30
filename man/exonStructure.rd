@@ -7,12 +7,13 @@
 Function that will paint the exon structure of a gene on the plots obtained by plotOnGene.
 }
 \usage{
-    exonStructure(mrna, genome, maxMismatch=4)
+    exonStructure(mrna, genome, maxMismatch=4, y=0)
 }
 \arguments{
   \item{mrna}{A gene sequence formatted as DNAstring, character-vectors or \link[Biostrings]{readFASTA} output.}
   \item{genome}{A number of gene sequences as DNAstring, vectors of DNAStrings, character-vectors or \link[Biostrings]{readFASTA} outputs.}
-  \item{maxMismatch}{Integer. The maximum number of mismatches per exon that can be allowed before the exon is not allocated at the position in the template mrna. Defaults to 4.}    
+  \item{maxMismatch}{Integer. The maximum number of mismatches per exon that can be allowed before the exon is not allocated at the position in the template mrna. Defaults to 4.}
+  \item{y}{Numeric. The vertical position of the exon structure (if ylim is changed)}    
 }
 \value{No value, but plots the layout of exons in a gene on the product of a call to \link{plotOnGene}.}
 \details{When given a sequence of the DNA divided by exons and a sequence of the corresponding mRNA string, this function
