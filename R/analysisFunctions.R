@@ -1,7 +1,7 @@
 
 setGeneric("doProbeLinear", function(object,label,testType="linear model") standardGeneric("doProbeLinear"))
 setMethod("doProbeLinear", "ExpressionSet",
-		plotStatisticsfunction(object,label,testType="linear model"){
+		function(object,label,testType="linear model"){
 			# Function to calculate if genes are interesting using linear models 
 			# takes an expressionset and a label
 			# outputs a matrix with the following data for each probe set "p-value","slope","intercept","slope/mean", and "anova"
