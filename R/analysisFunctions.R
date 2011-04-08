@@ -521,9 +521,9 @@ exonStructure <- function(mrna,genome,maxMismatch=4,y=0){
 }
 
 
-setGeneric("geneRegionScan", function(object,gene,genomicData=NULL,probeData=NULL,label=NULL,genename=NULL,summaryType="median",yMax=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",correlationCutoff=0.3,probeLevelInfo=c("probeid")) standardGeneric("geneRegionScan"))
+setGeneric("geneRegionScan", function(object,gene,genomicData=NULL,probeData=NULL,label=NULL,genename=NULL,summaryType="median",ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",correlationCutoff=0.3,probeLevelInfo=c("probeid")) standardGeneric("geneRegionScan"))
 setMethod("geneRegionScan", "ExpressionSet",
-		function(object,gene,genomicData=NULL,probeData=NULL,label=NULL,genename=NULL,summaryType="median",yMax=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",correlationCutoff=0.3,probeLevelInfo=c("probeid")){
+		function(object,gene,genomicData=NULL,probeData=NULL,label=NULL,genename=NULL,summaryType="median",ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",correlationCutoff=0.3,probeLevelInfo=c("probeid")){
 			#Wrapper around plotOnGene, exonStructure and plotCoexpression.
 			#Serves a complete pdf-plot of the genes under investigation, their exon structure and their coexpression patterns.
 			#The most important parameters are the "gene" which can be a vector of characters, DNAStrings or readFASTA-genes (it is parsed by readGeneInput) and the expressionset
@@ -575,7 +575,7 @@ setMethod("geneRegionScan", "ExpressionSet",
 				left_border  <-  1.43 * (length(gene) / 2)
 				right_border  <-  1.02 * (length(gene) / 2)
 				par(mai=c(0,left_border,0.82,right_border)) #this has been manually fine tuned to match the other functions called
-				plotOnGene(expressionset,gene_input,probeData=probeData,label=label,genename=genename,summaryType=summaryType,yMax=yMax,testType=testType,forcePValue=forcePValue,verbose=verbose,cutoff=cutoff,directions=directions)
+				plotOnGene(expressionset,gene_input,probeData=probeData,label=label,genename=genename,summaryType=summaryType,ylim=ylim,testType=testType,forcePValue=forcePValue,verbose=verbose,cutoff=cutoff,directions=directions)
 				if(!is.null(genomicData)){
 					exonStructure(gene_input,genomicData[[i]])
 				}

@@ -11,7 +11,7 @@ The top-level wrapper function that outputs as much data as possible, concerning
 \link{plotCoexpression} and \link{plotOnGene} for further explanation of each part of the plot. 
 }
 \usage{
-    geneRegionScan(object, gene, genomicData=NULL, probeData=NULL, label=NULL, genename=NULL, summaryType="median", yMax=NULL, testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2, directions="all",correlationCutoff=0.3, probeLevelInfo=c("probeid"))
+    geneRegionScan(object, gene, genomicData=NULL, probeData=NULL, label=NULL, genename=NULL, summaryType="median", ylim=NULL, testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2, directions="all",correlationCutoff=0.3, probeLevelInfo=c("probeid"))
     }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
@@ -21,7 +21,6 @@ The top-level wrapper function that outputs as much data as possible, concerning
   \item{label}{An optional character string specifying a column name in the pData of the object. If this argument is given, the gene plot will be colour coded based on the different groups (factors) in the pData entry. If a summaryType other than 'dots' is selected the summarisation is done stratified by the different groups in the pData.}    
   \item{genename}{Optional character string specifying a gene name to include in the plot. If not included and a FASTA sequence is given, it will default to the name in the FASTA sequence. Otherwise it will default to 'Unknown genename'.}
   \item{summaryType}{Character string specifying one of the following summary methods: 'median', 'mean', 'quartiles' or 'dots' (i.e. no summary). Specifies how all the sample values or all the samples values in a group if 'label' is given, should be summarised. Defaults to 'median'.}
-  \item{yMax}{Optional integer. If given, this value will be the maximal value on the y-axis. This is useful if a few outlier probes have very high intensity values, as the default is to set the yMax to the maximal intensity value.}
   \item{testType}{Optional character string, defining a statistic procedure to identify especially interesting probes. Can be either 'linear model', 'students' or 'wilcoxons'. If given, a label must also be specified. In this case the \link{plotStatistics} function will be called and probes that are significantly changed between the groups in label at the P-value set in cutoff (see cutoff argument) will be circled.}
   \item{forcePValue}{Logical. Is used if the testType argument is used. If TRUE all significantly changed probes have P-value given on the plot. If FALSE, only plots with less than 10 significant probes write P-values. Plots can become very cluttered with data if set to TRUE}
   \item{verbose}{TRUE or FALSE}
@@ -29,7 +28,7 @@ The top-level wrapper function that outputs as much data as possible, concerning
   \item{directions}{A character vector of the matching-directions that should be scanned (which combinations of complementary and reverse). Defaults to "all" which is shorthand for all possible directions, but can take anything from: c("matchForwardSense", "matchForwardAntisense", "matchReverseSense", "matchReverseAntisense")}
   \item{correlationCutoff}{A number between 0 and 1. The limit at which Pearson correlation (in absolute values) should not be plotted below. Defaults to 0.5}
   \item{probeLevelInfo}{The information about each probe to include in the plot. Should be a vector of one or more of the following elements: probeid, probesetid, sequence. Default is only probeid.}
-  
+  \item{ylim}{Label of Y-axis as in default plots}
     
 }
 \value{No value, but plots the local expression levels of each probe found in the submitted sequence of the gene or 
