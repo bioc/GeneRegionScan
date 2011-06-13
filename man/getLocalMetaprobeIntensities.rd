@@ -28,6 +28,9 @@ Function that will create an expressionset from cel files.
 \details{This function is a simple wrapper around Affymetrix Power Tools (APT). It is useful for importing
 meta probe set data from cel files to R environments. It will remember the location of annotation files,
 after the first use, which removes some of the typing otherwise included in using APT.
+This function has now been updated so that a windows edition of apt-probeset-summarize.exe from APT-1.12.0 is 
+included in the installation package, so that pre-processing of cel files can be done with less setup. Linux users
+will still have to install APT for this function. 
 }
 \author{Lasse Folkersen}
 \seealso{\code{\link{getLocalProbeIntensities}}, \code{\link{plotOnGene}}}

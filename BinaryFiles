@@ -1,2 +1,3 @@
 exec/apt-cel-extract-linux64
 exec/apt-cel-extract-win32.exe
+exec/apt-probeset-summarize-win32.exe

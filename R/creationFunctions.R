@@ -606,7 +606,7 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 			}
 			
 			#...if not used before, check if we can use the aptfiles in the exec folder of the package
-			executableFileOverviewPath <- file.path(.path.package("GeneRegionScan"),"configfiles","aptfiles.txt")
+			executableFileOverviewPath <- file.path(.path.package("GeneRegionScan"),"configfiles","aptextractfiles.txt")
 			executableFileOverview <- read.table(executableFileOverviewPath,header=FALSE,sep="\t")
 			machineType <- paste(Sys.info()[["sysname"]],Sys.info()[["machine"]])
 			if(machineType %in% executableFileOverview[,1]){
@@ -1006,7 +1006,7 @@ getProbesetsFromRegionOfInterest <- function(annotation,chromosome,start,end,pyt
 		#we will save the locations for future use
 		#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
 		#it was re-inserted because other it seems that other packages do it as well
-
+		
 		#saving the mpsToPsFile and transcriptClustersFile locations for next time 
 		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(file.access(locationFilePath,2) == 0){
@@ -1364,10 +1364,27 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 				}
 			}
 			
-			#...we do not include binaries, like it is done for apt-cel-extract
 			
-			
-			
+			#...if not used before, check if we can use the aptfiles in the exec folder of the package
+			executableFileOverviewPath <- file.path(.path.package("GeneRegionScan"),"configfiles","aptsummarizefiles.txt")
+			executableFileOverview <- read.table(executableFileOverviewPath,header=FALSE,sep="\t")
+			machineType <- paste(Sys.info()[["sysname"]],Sys.info()[["machine"]])
+			if(machineType %in% executableFileOverview[,1]){
+				aptCelSummarizetName <- as.character(executableFileOverview[executableFileOverview[,1] == machineType,2])
+				
+				#Sometimes the file doesn't want to run on windows. We have to check that.
+				if(Sys.info()[["sysname"]] == "Windows"){
+					tempAptCelSummarizePath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
+					ERRORLEVEL <- system(shQuote(tempAptCelSummarizePath),intern=TRUE)
+					if(length(ERRORLEVEL) > 20){ #if more than 20 lines -> safe to assume that the file worked and the help was printed
+						aptProbesetSummarizePath <- tempAptCelSummarizePath
+					}
+				}else{
+					aptProbesetSummarizePath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
+				}
+				
+				
+			}
 			
 			#...if still not found, we'll have to stop the show
 			if(is.null(aptProbesetSummarizePath)){

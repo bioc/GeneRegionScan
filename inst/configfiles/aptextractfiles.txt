@@ -1,0 +1,3 @@
+sysname and machine	name of executable file
+Linux x86_64	apt-cel-extract-linux64
+Windows x86	apt-cel-extract-win32.exe

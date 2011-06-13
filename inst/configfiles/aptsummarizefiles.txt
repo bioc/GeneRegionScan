@@ -1,0 +1,2 @@
+sysname and machine	name of executable file
+Windows x86	apt-probeset-summarize-win32.exe
