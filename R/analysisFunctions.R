@@ -195,10 +195,105 @@ setMethod("plotStatistics", "ExpressionSet",
 		})
 
 
+
+
+setGeneric("findProbePositions", function(object, gene, probeData=NULL,interval=NULL,directions="all",verbose=TRUE) standardGeneric("findProbePositions"))
+setMethod("findProbePositions", "ExpressionSet",
+		function(object, gene, probeData=NULL,interval=NULL,directions="all",verbose=TRUE){
+			# This function figures out the position of probes based on their sequence and an input gene sequence
+			#  * "expressionset"/"object" the expression of all probes and their associated pData. 
+			#  * "gene" in the form of a loaded FASTA sequence, character-sequence or DNAString instance
+			#  * "probeData" (Optional if ProbeLevelSet is given) a description of all features. It requires a data frame with the featureNames as rownames and a column "sequence" containing their sequence.
+			#
+			# Optional switches are:
+			# * interval: Optional interval of the gene to zoom on. If numbers outside of the gene length is given, they're truncated to end with the gene
+			# * verbose: Print a lot of outputtext?
+			# * directions: A character vector of the matching-directions that should be scanned. Defaults to "all", which is shorthand for all the remaining directions: c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense")
+			
+			
+			
+			expressionset<-object
+			if(!all(directions %in% c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense","all")))stop(paste("The directions variable:",paste(directions,collapse=", "),"was not recognised. The directions must be in \"matchForwardSense\",\"matchForwardAntisense\",\"matchReverseSense\",\"matchReverseAntisense\",\"all\""))
+			
+			if("all" %in% directions){
+				directions <- c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense")
+			}
+			
+			
+			
+			#This part choses if probe data is from the pData(featureData(x)) or from user-defined probe data (ie. a data frame with sequences)	
+			if(is.null(probeData)){
+				if(ncol(pData(featureData(expressionset))) == 0){
+					stop(paste("No featuredata found in",expressionset@experimentData@title,"and no probe data explicitly given"))
+				}else{
+					probeData <- pData(featureData(expressionset))
+					if(verbose)print(paste("Probe data for",nrow(probeData),"probes found as featureData in the expressionset",expressionset@experimentData@title))
+				}
+			}
+			if(class(probeData[,"sequence"]) != "character")stop(paste("The 'sequence' column of the probeData had data of class",class(probeData[,"sequence"]),"and not character as required"))
+			
+			if(length(rownames(probeData)) == length(featureNames(expressionset))){
+				if(!all(rownames(probeData) %in% featureNames(expressionset)))warning(paste("Not all probe ids given in the probe_level_annotation data in the notes section() of",expressionset@experimentData@title,"were found in the featureNames (probe ids) in the expressionset"))
+				if(!all(featureNames(expressionset) %in% rownames(probeData)))warning(paste("Not all featureNames (probe ids) in the expressionset,",expressionset@experimentData@title,"were found in the probe ids given in the probe_level_annotation data in the notes section()"))
+			}else{
+				warning(paste("The expressionset,",expressionset@experimentData@title,"had",length(featureNames(expressionset)),"features in the exprs-part, but",length(rownames(probeData)),"entries in the probe_level_annotation of the notes() section. This might indicate corrupted data"))
+			}
+			
+			
+			
+			if(verbose)print(paste("Investigating",length(gene),"bp sequence"))
+			
+			probe <- XStringViews(probeData[,"sequence"],"DNAString")
+			
+			
+			positionVector <- vector()
+			
+			if("matchForwardSense" %in% directions){
+				probe_pdict <- PDict(probe)
+				matchForwardSense <- matchPDict(probe_pdict,gene)
+			}
+			if("matchForwardAntisense" %in% directions){
+				probe_pdict <- PDict(complement(probe))
+				matchForwardAntisense <- matchPDict(probe_pdict,gene)
+			}
+			if("matchReverseSense" %in% directions){ 
+				probe_pdict <- PDict(reverse(probe))
+				matchReverseSense <- matchPDict(probe_pdict,gene)
+			}
+			if("matchReverseAntisense" %in% directions){
+				probe_pdict <- PDict(reverseComplement(probe))
+				matchReverseAntisense <- matchPDict(probe_pdict,gene)
+			}
+			
+			for(match_direction_name in directions){
+				match_direction <- get(match_direction_name)
+				if(sum(countIndex(match_direction) > 1) > 0){
+					stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
+				}
+				if(sum(countIndex(match_direction) == 1) > 0){
+					
+					if("all" %in% directions | length(directions) > 1){
+						print(paste("Found",sum(countIndex(match_direction) == 1),"probes matching in",match_direction_name))
+					}
+					
+					index <- which(countIndex(match_direction) == 1)
+					probeid <- rownames(probeData)[index]
+					probeposition_here <- unlist(startIndex(match_direction)[index])
+					names(probeposition_here) <- probeid
+					positionVector <- c(positionVector,probeposition_here)
+					
+				}
+			}
+			return(positionVector)
+		})		
+
+
+
+
+
 setGeneric("plotOnGene", function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",ylab="expression") standardGeneric("plotOnGene"))
 setMethod("plotOnGene", "ExpressionSet",
 		function(object,gene,probeData=NULL,label=NULL,genename=NULL,summaryType="median",interval=NULL,ylim=NULL,testType=NULL,forcePValue=FALSE,verbose=TRUE,cutoff=0.2,directions="all",ylab="expression"){
-			# This function is an updated version of plotOnGene 
 			# This functions takes the following input:
 			#  * "expressionset" the expression of all probes and their associated pData. Rownames of probeData and featurenames of expressionset should be the same.
 			#  * "gene" in the form of a loaded FASTA sequence, character-sequence or DNAString instance
@@ -248,12 +343,6 @@ setMethod("plotOnGene", "ExpressionSet",
 				}
 			}
 			
-			if(!all(directions %in% c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense","all")))stop(paste("The directions variable:",paste(directions,collapse=", "),"was not recognised. The directions must be in \"matchForwardSense\",\"matchForwardAntisense\",\"matchReverseSense\",\"matchReverseAntisense\",\"all\""))
-			
-			if("all" %in% directions){
-				directions <- c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense")
-			}
-			
 			gene <- readGeneInput(gene,genename)
 			if(length(gene) > 1){
 				warning(paste("The input specified",length(gene),"genes, but the function only accepts one. The first one,",gene[[1]][["desc"]],"was used"))
@@ -263,7 +352,7 @@ setMethod("plotOnGene", "ExpressionSet",
 			gene <- DNAString(gene[[1]][["seq"]])
 			
 			
-			#This function is for people who want to specify their probe level sequences externally without using the ProbeLevelSet	
+			#This part choses if probe data is from the pData(featureData(x)) or from user-defined probe data (ie. a data frame with sequences)	
 			if(is.null(probeData)){
 				if(ncol(pData(featureData(expressionset))) == 0){
 					stop(paste("No featuredata found in",expressionset@experimentData@title,"and no probe data explicitly given"))
@@ -282,14 +371,14 @@ setMethod("plotOnGene", "ExpressionSet",
 			}
 			
 			
-			
+			#this part checks the interval
 			if(!is.null(interval)){
 				if(interval[1] > interval[2]){stop(paste("The interval must be a vector with two numeric values, the first being lowest. You gave:",paste(interval,collapse=" to ")))}
 				if(interval[1]<1){
 					interval[1] <- 1
 					warning("Interval can't be lower than 1. It is automatically corrected to 1")
 				}
-				if(interval[2] >= length(gene)){
+				if(interval[2] > length(gene)){
 					warning(paste("Interval max (",interval[2],") can't be higher than gene length. It was automatically corrected to gene length ",length(gene),sep=""))
 					interval[2] <- length(gene)
 				}
@@ -300,57 +389,7 @@ setMethod("plotOnGene", "ExpressionSet",
 			}
 			interval_length <- interval[2]-interval[1]
 			
-			
-			if(verbose)print(paste("Investigating",length(gene),"bp sequence from",genename))
-			
-			probe <- XStringViews(probeData[,"sequence"],"DNAString")
-			
-			
-			
-			
-			positionVector <- vector()
-			
-			if("matchForwardSense" %in% directions){
-				probe_pdict <- PDict(probe)
-				matchForwardSense <- matchPDict(probe_pdict,gene)
-			}
-			if("matchForwardAntisense" %in% directions){
-				probe_pdict <- PDict(complement(probe))
-				matchForwardAntisense <- matchPDict(probe_pdict,gene)
-			}
-			if("matchReverseSense" %in% directions){ 
-				probe_pdict <- PDict(reverse(probe))
-				matchReverseSense <- matchPDict(probe_pdict,gene)
-			}
-			if("matchReverseAntisense" %in% directions){
-				probe_pdict <- PDict(reverseComplement(probe))
-				matchReverseAntisense <- matchPDict(probe_pdict,gene)
-			}
-			
-			for(match_direction_name in directions){
-				match_direction <- get(match_direction_name)
-				if(sum(countIndex(match_direction) > 1) > 0){
-					stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
-				}
-				if(sum(countIndex(match_direction) == 1) > 0){
-					
-					if("all" %in% directions | length(directions) > 1){
-						print(paste("Found",sum(countIndex(match_direction) == 1),"probes matching in",match_direction_name))
-					}
-					
-					index <- which(countIndex(match_direction) == 1)
-					probeid <- rownames(probeData)[index]
-					probeposition_here <- unlist(startIndex(match_direction)[index])
-					names(probeposition_here) <- probeid
-					positionVector <- c(positionVector,probeposition_here)
-					
-				}
-			}
-			
-			
-			
-			
-			
+			positionVector<-findProbePositions(object=expressionset, gene=gene, probeData=probeData,interval=interval,directions="all",verbose=TRUE)
 			
 			if(length(positionVector) == 0){stop(paste("No probes found that matched in the given sequence of",genename,"- try specifying another direction variable with one of these: \"matchForwardSense\",\"matchForwardAntisense\",\"matchReverseSense\",\"matchReverseAntisense\""))}
 			
@@ -365,7 +404,7 @@ setMethod("plotOnGene", "ExpressionSet",
 				
 #				ylim <- c(0,max(exprs(expressionset[names(positionVector)])))
 			}
-
+			
 			
 			
 			#ylim <- c(0,1)
