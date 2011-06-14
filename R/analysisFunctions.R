@@ -240,6 +240,12 @@ setMethod("findProbePositions", "ExpressionSet",
 			}
 			
 			
+			gene <- readGeneInput(gene)
+			if(length(gene) > 1){
+				warning(paste("The input specified",length(gene),"genes, but the function only accepts one. The first one,",gene[[1]][["desc"]],"was used"))
+				gene <- list(gene[[1]])
+			}
+			genename <- gene[[1]][["desc"]]
 			gene <- DNAString(gene[[1]][["seq"]])
 			
 			if(verbose)print(paste("Investigating",length(gene),"bp sequence"))
