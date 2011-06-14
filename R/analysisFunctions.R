@@ -240,6 +240,7 @@ setMethod("findProbePositions", "ExpressionSet",
 			}
 			
 			
+			gene <- DNAString(gene[[1]][["seq"]])
 			
 			if(verbose)print(paste("Investigating",length(gene),"bp sequence"))
 			
