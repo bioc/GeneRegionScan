@@ -246,9 +246,9 @@ setMethod("findProbePositions", "ExpressionSet",
 				gene <- list(gene[[1]])
 			}
 			genename <- gene[[1]][["desc"]]
-			gene <- DNAString(gene[[1]][["seq"]])
+			sequence <- DNAString(gene[[1]][["seq"]])
 			
-			if(verbose)print(paste("Investigating",length(gene),"bp sequence"))
+			if(verbose)print(paste("Investigating",length(sequence),"bp sequence"))
 			
 			probe <- XStringViews(probeData[,"sequence"],"DNAString")
 			
@@ -257,19 +257,19 @@ setMethod("findProbePositions", "ExpressionSet",
 			
 			if("matchForwardSense" %in% directions){
 				probe_pdict <- PDict(probe)
-				matchForwardSense <- matchPDict(probe_pdict,gene)
+				matchForwardSense <- matchPDict(probe_pdict,sequence)
 			}
 			if("matchForwardAntisense" %in% directions){
 				probe_pdict <- PDict(complement(probe))
-				matchForwardAntisense <- matchPDict(probe_pdict,gene)
+				matchForwardAntisense <- matchPDict(probe_pdict,sequence)
 			}
 			if("matchReverseSense" %in% directions){ 
 				probe_pdict <- PDict(reverse(probe))
-				matchReverseSense <- matchPDict(probe_pdict,gene)
+				matchReverseSense <- matchPDict(probe_pdict,sequence)
 			}
 			if("matchReverseAntisense" %in% directions){
 				probe_pdict <- PDict(reverseComplement(probe))
-				matchReverseAntisense <- matchPDict(probe_pdict,gene)
+				matchReverseAntisense <- matchPDict(probe_pdict,sequence)
 			}
 			
 			for(match_direction_name in directions){
@@ -356,7 +356,7 @@ setMethod("plotOnGene", "ExpressionSet",
 				gene <- list(gene[[1]])
 			}
 			genename <- gene[[1]][["desc"]]
-			gene <- DNAString(gene[[1]][["seq"]])
+			sequence <- DNAString(gene[[1]][["seq"]])
 			
 			
 			#This part choses if probe data is from the pData(featureData(x)) or from user-defined probe data (ie. a data frame with sequences)	
@@ -385,18 +385,18 @@ setMethod("plotOnGene", "ExpressionSet",
 					interval[1] <- 1
 					warning("Interval can't be lower than 1. It is automatically corrected to 1")
 				}
-				if(interval[2] > length(gene)){
+				if(interval[2] > length(sequence)){
 					warning(paste("Interval max (",interval[2],") can't be higher than gene length. It was automatically corrected to gene length ",length(gene),sep=""))
-					interval[2] <- length(gene)
+					interval[2] <- length(sequence)
 				}
-				gene <- gene[interval[1]:interval[2]]	
+				sequence <- sequence[interval[1]:interval[2]]	
 			}
 			if(is.null(interval)){
-				interval <- c(0,length(gene))
+				interval <- c(0,length(sequence))
 			}
 			interval_length <- interval[2]-interval[1]
 			
-			positionVector<-findProbePositions(object=expressionset, gene=gene, probeData=probeData,interval=interval,directions="all",verbose=TRUE)
+			positionVector<-findProbePositions(object=expressionset, gene=list(list(desc=genename,seq=as.character(sequence))), probeData=probeData,interval=interval,directions="all",verbose=TRUE)
 			
 			if(length(positionVector) == 0){stop(paste("No probes found that matched in the given sequence of",genename,"- try specifying another direction variable with one of these: \"matchForwardSense\",\"matchForwardAntisense\",\"matchReverseSense\",\"matchReverseAntisense\""))}
 			
