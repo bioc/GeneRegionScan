@@ -92,13 +92,10 @@ This produces a plot where the x-axis shows the length of gene (in this case the
 
 <<plot2,fig=TRUE>>=
 plotOnGene(exampleProbeLevelSet, mrna, summaryType="dots", interval=c(500,1000))
-@
-
-This will zoom in on the first 500 bp of the gene, while preserving the x-axis labels, and show the expression level of each single sample as a dot. This is the maximum resolution possible with Affymetrix arrays, but it is rarely seen, since data is most often summarised by probeset or metaprobeset. In the case of Human Exon ST 1.0 arrays, like here, a probeset is roughly equal to an exon - or four probes. This can be seen by adding the exon structure to the plot:
-<<plot3>>=
 exonStructure(mrna, genomic)
 @
 
+This will zoom in on the first 500 bp of the gene, while preserving the x-axis labels, and show the expression level of each single sample as a dot. This is the maximum resolution possible with Affymetrix arrays, but it is rarely seen, since data is most often summarised by probeset or metaprobeset. In the case of Human Exon ST 1.0 arrays, like here, a probeset is roughly equal to an exon - or four probes. This can be seen by adding the exon structure to the plot using the \Rfunction{exonStructure} function.
 A sequence like the one in \Robject{genomic}, which is divided by exons, allows the visualization of the exon structure on the plots that we just made. By far the easiest way to obtain sequences like this, is to go to \url{http://genome.ucsc.edu}, find your gene of interest, download first the mRNA sequence as FASTA, and the genomic sequence as FASTA. When downloading genomic sequence it will ask for the "Sequence Retrieval Region Options". Make sure you specify exons only and "One FASTA record per region".
 
 Instead of just looking at summarized expression values, we will often want to include sample condition from pData in the plot. This is done with the 'label' argument, specifying one of the pdata column names. In example below, 'gender' has been given as the label. In addition, the new argument 'testType' has been used. This specifies an optional test to employ when searching for differences. Using this argument will highlight probes that change significantly between the label groups. In the example below, there is very few probes with significant change between genders. The ones that are, are indicated by grey and black circles.

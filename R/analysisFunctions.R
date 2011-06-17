@@ -250,7 +250,7 @@ setMethod("findProbePositions", "ExpressionSet",
 			
 			if(verbose)print(paste("Investigating",length(sequence),"bp sequence"))
 			
-			probe <- XStringViews(probeData[,"sequence"],"DNAString")
+			probe <- DNAStringSet(probeData[,"sequence"])
 			
 			
 			positionVector <- vector()
@@ -530,21 +530,18 @@ exonStructure <- function(mrna,genome,maxMismatch=4,y=0){
 	
 	exonstructure <- matrix(ncol=3,nrow=length(genome))
 	exonrownames <- vector()
-	#i <- 1
-	
+		
 	if(length(mrna) > length(genome))stop(paste("There is",length(mrna),"entries in the mrna, and",length(genome),"entries in the genome argument. Are you sure you didn't switch the arguments?"))
 	
 	mrna <- DNAString(mrna[[1]][["seq"]][1])
 	for(i in 1:length(genome)){
 		exon <- DNAString(genome[[i]][["seq"]][1])
-#		exonrownames[i] <- sub(" .+$","",genome[[i]][["desc"]][1])
-		
 		match <- matchPattern(exon,mrna,max.mismatch=maxMismatch)
-		if(length(match@start) > 1){
-			warning(paste("WARNING: exon",i,"was found to match",length(match@start),"times on the mrna given. Only the first match have been used. This should be further investigated."))	
-			exonstructure_here <- c(match@start[1],match@width[1]+match@start[1],i)
+		if(length(match@ranges@start) > 1){
+			warning(paste("WARNING: exon",i,"was found to match",length(match@ranges@start),"times on the mrna given. Only the first match have been used. This should be further investigated."))	
+			exonstructure_here <- c(match@ranges@start[1],match@ranges@width[1]+match@ranges@start[1],i)
 		}else{
-			exonstructure_here <- c(match@start,match@width+match@start,i)
+			exonstructure_here <- c(match@ranges@start,match@ranges@width+match@ranges@start,i)
 		}
 		if(length(exonstructure_here) == 1){
 			exonstructure_here <- c(NA,NA,NA)
@@ -552,7 +549,7 @@ exonStructure <- function(mrna,genome,maxMismatch=4,y=0){
 		}
 		exonstructure[i,] <- exonstructure_here
 	}
-#	rownames(exonstructure) <- exonrownames
+
 	colnames(exonstructure) <- c("start","end","exonnumber")
 	
 	for(i in 1:nrow(exonstructure)){
@@ -764,7 +761,7 @@ setMethod("plotCoexpression", "ExpressionSet",
 				warning(paste("The expressionset,",expressionset@experimentData@title,"had",length(featureNames(expressionset)),"features in the exprs-part, but",length(rownames(probeData)),"entries in the probe_level_annotation of the notes() section. This might indicate corrupted data"))
 			}
 			
-			probe <- XStringViews(probeData[,"sequence"],"DNAString")
+#			probe <- XStringViews(probeData[,"sequence"],"DNAString")
 			
 			
 			if(!all(directions %in% c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense","all"))){
@@ -790,43 +787,46 @@ setMethod("plotCoexpression", "ExpressionSet",
 			for(i in 1:length(gene)){ 
 				
 				
-				
-				
-				
-				positionVector_here <- vector()
-				probeid <- vector()
 				single_gene <- DNAString(gene[[i]][["seq"]])
+				positionVector_here<-findProbePositions(object=expressionset, gene=single_gene, probeData=probeData,interval=interval,directions="all",verbose=TRUE)
 				
-				if("matchForwardSense" %in% directions){
-					probe_pdict <- PDict(probe)
-					matchForwardSense <- matchPDict(probe_pdict,single_gene)
-				}
-				if("matchForwardAntisense" %in% directions){
-					probe_pdict <- PDict(complement(probe))
-					matchForwardAntisense <- matchPDict(probe_pdict,single_gene)
-				}
-				if("matchReverseSense" %in% directions){ 
-					probe_pdict <- PDict(reverse(probe))
-					matchReverseSense <- matchPDict(probe_pdict,single_gene)
-				}
-				if("matchReverseAntisense" %in% directions){
-					probe_pdict <- PDict(reverseComplement(probe))
-					matchReverseAntisense <- matchPDict(probe_pdict,single_gene)
-				}
+#				if(length(positionVector) == 0){stop(paste("No probes found that matched in the given sequence of",genename,"- try specifying another direction variable with one of these: \"matchForwardSense\",\"matchForwardAntisense\",\"matchReverseSense\",\"matchReverseAntisense\""))}
 				
-				for(match_direction_name in directions){
-					match_direction <- get(match_direction_name)
-					if(sum(countIndex(match_direction) > 1) > 0){
-						stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
-					}
-					if(sum(countIndex(match_direction) == 1) > 0){
-						index <- which(countIndex(match_direction) == 1)
-						probeid <- rownames(probeData)[index]
-						probeposition_here <- unlist(startIndex(match_direction)[index])
-						names(probeposition_here) <- probeid
-						positionVector_here <- c(positionVector_here,probeposition_here)
-					}
-				}
+				
+#				positionVector_here <- vector()
+#				probeid <- vector()
+#				
+#				
+#				if("matchForwardSense" %in% directions){
+#					probe_pdict <- PDict(probe)
+#					matchForwardSense <- matchPDict(probe_pdict,single_gene)
+#				}
+#				if("matchForwardAntisense" %in% directions){
+#					probe_pdict <- PDict(complement(probe))
+#					matchForwardAntisense <- matchPDict(probe_pdict,single_gene)
+#				}
+#				if("matchReverseSense" %in% directions){ 
+#					probe_pdict <- PDict(reverse(probe))
+#					matchReverseSense <- matchPDict(probe_pdict,single_gene)
+#				}
+#				if("matchReverseAntisense" %in% directions){
+#					probe_pdict <- PDict(reverseComplement(probe))
+#					matchReverseAntisense <- matchPDict(probe_pdict,single_gene)
+#				}
+#				
+#				for(match_direction_name in directions){
+#					match_direction <- get(match_direction_name)
+#					if(sum(countIndex(match_direction) > 1) > 0){
+#						stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
+#					}
+#					if(sum(countIndex(match_direction) == 1) > 0){
+#						index <- which(countIndex(match_direction) == 1)
+#						probeid <- rownames(probeData)[index]
+#						probeposition_here <- unlist(startIndex(match_direction)[index])
+#						names(probeposition_here) <- probeid
+#						positionVector_here <- c(positionVector_here,probeposition_here)
+#					}
+#				}
 				
 				
 				
