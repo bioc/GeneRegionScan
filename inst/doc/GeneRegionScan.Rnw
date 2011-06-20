@@ -100,14 +100,14 @@ A sequence like the one in \Robject{genomic}, which is divided by exons, allows 
 
 Instead of just looking at summarized expression values, we will often want to include sample condition from pData in the plot. This is done with the 'label' argument, specifying one of the pdata column names. In example below, 'gender' has been given as the label. In addition, the new argument 'testType' has been used. This specifies an optional test to employ when searching for differences. Using this argument will highlight probes that change significantly between the label groups. In the example below, there is very few probes with significant change between genders. The ones that are, are indicated by grey and black circles.
 
-<<plot4, fig=TRUE>>=
+<<plot3, fig=TRUE>>=
 plotOnGene(exampleProbeLevelSet, mrna, label="gender", testType="wilcoxon", verbose=FALSE)
 exonStructure(mrna, genomic)
 
 @
 
 If the case were that the entire gene was significantly regulated between two groups of interest, then a standard summarization could just as well have shown it. However, if only some exons of the gene are regulated, such as in the case of a transcript isoform, perhaps unknown, that is changed, this kind of plot will reveal it. One example is included here:
-<<plot5>>=
+<<plot4>>=
 plotOnGene(exampleProbeLevelSet, mrna, label="genotype1", testType="linear model", verbose=FALSE)
 exonStructure(mrna, genomic)
 @

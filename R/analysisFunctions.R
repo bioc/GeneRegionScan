@@ -537,11 +537,11 @@ exonStructure <- function(mrna,genome,maxMismatch=4,y=0){
 	for(i in 1:length(genome)){
 		exon <- DNAString(genome[[i]][["seq"]][1])
 		match <- matchPattern(exon,mrna,max.mismatch=maxMismatch)
-		if(length(match@ranges@start) > 1){
-			warning(paste("WARNING: exon",i,"was found to match",length(match@ranges@start),"times on the mrna given. Only the first match have been used. This should be further investigated."))	
-			exonstructure_here <- c(match@ranges@start[1],match@ranges@width[1]+match@ranges@start[1],i)
+		if(length(start(match)) > 1){
+			warning(paste("WARNING: exon",i,"was found to match",length(start(match)),"times on the mrna given. Only the first match have been used. This should be further investigated."))	
+			exonstructure_here <- c(start(match)[1],width(match)[1]+start(match)[1],i)
 		}else{
-			exonstructure_here <- c(match@ranges@start,match@ranges@width+match@ranges@start,i)
+			exonstructure_here <- c(start(match),width(match)+start(match),i)
 		}
 		if(length(exonstructure_here) == 1){
 			exonstructure_here <- c(NA,NA,NA)
