@@ -110,7 +110,7 @@ setMethod("excludeDoubleMatchingProbes", "ProbeLevelSet",
 		})
 
 
-findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg18",verbose=TRUE,directions=c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense")){
+findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg19",verbose=TRUE,directions=c("matchForwardSense","matchForwardAntisense","matchReverseSense","matchReverseAntisense")){
 	#This functions takes a set of sequences and checks where they are present in UCSC genome in the relevant bioconductor package.
 	#The sequence should be given as a list of nucleotide-character strings: c("GAGTATA","GTAGATGA")
 	#Optional arguments:
@@ -130,7 +130,7 @@ findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg18",
 	
 	
 	genome_name <- sub("BSgenome.","",genome)
-	genome_name <- sub("\\..*","",genome_name,fixed=TRUE)
+	genome_name <- sub("\\..+$","",genome_name)
 	chr_names <- seqnames(get(genome_name))
 	chr_names <- chr_names[-grep("_", chr_names)]
 	
