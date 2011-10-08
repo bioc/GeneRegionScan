@@ -10,7 +10,7 @@ genome. Takes a long time to run.
 }
 \usage{
 findSequenceInGenome(sequences,
-    genome="BSgenome.Hsapiens.UCSC.hg18", verbose=TRUE, 
+    genome="BSgenome.Hsapiens.UCSC.hg19", verbose=TRUE, 
     directions=c("matchForwardSense", "matchForwardAntisense",
                  "matchReverseSense", "matchReverseAntisense")) 
 }
