@@ -143,20 +143,20 @@ findSequenceInGenome <- function(sequences,genome="BSgenome.Hsapiens.UCSC.hg19",
 		new_sequences <- unlist(lapply(sequences, as.character))
 	}
 	
-	probe <- XStringViews(as.character(sequences),"DNAString") #need to remove names or PDict will crash
+	probe <- DNAStringSet(as.character(sequences)) #need to remove names or PDict will crash
 	
-	probe_directions <- vector()
+	probe_directions <- DNAStringSet()
 	if("matchForwardSense" %in% directions){
-		probe_directions <- c(probe_directions,as.character(probe))
+		probe_directions <- c(probe_directions,probe)
 	}
 	if("matchForwardAntisense" %in% directions){
-		probe_directions <- c(probe_directions,as.character(complement(probe)))
+		probe_directions <- c(probe_directions,complement(probe))
 	}
 	if("matchReverseSense" %in% directions){ 
-		probe_directions <- c(probe_directions,as.character(reverse(probe)))
+		probe_directions <- c(probe_directions,reverse(probe))
 	}
 	if("matchReverseAntisense" %in% directions){
-		probe_directions <- c(probe_directions,as.character(reverseComplement(probe)))			
+		probe_directions <- c(probe_directions,reverseComplement(probe))			
 	}
 	
 	probe_pdict <- PDict(probe_directions)
