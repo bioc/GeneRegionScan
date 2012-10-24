@@ -1671,3 +1671,21 @@ getProbesetsFromMetaprobeset <- function(annotation,metaprobesets,pythonPath=NUL
 	
 	return(probesets_of_interest)
 }
+
+
+
+
+
+
+readFASTA_replacement<-function(path){
+	#small replacement function for the deprecated readFASTA
+	DNAStringSet<-read.DNAStringSet(path)
+	readFASTAformatList<-list()
+	for(i in 1:length(DNAStringSet)){
+		readFASTAformatList[[i]]<-list()
+		
+		readFASTAformatList[[i]][["desc"]]<- names(as.character(DNAStringSet))[i]
+		readFASTAformatList[[i]][["seq"]]<- as.character(as.character(DNAStringSet)[i])
+	}
+	return(readFASTAformatList)
+}

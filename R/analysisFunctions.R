@@ -643,7 +643,7 @@ readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 		if(file.exists(gene)){
 			if(verbose)print(paste("Received what was interpreted as the path to a fasta format gene:",gene))
 			#library(Biostrings)
-			gene <- readFASTA(gene,strip.desc=FALSE)
+			gene <- readFASTA_replacement(gene)
 		}else{
 			stop(paste("Received what was interpreted as the path to a fasta format gene, but did not find the file:",gene))
 		}
