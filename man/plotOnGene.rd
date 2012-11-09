@@ -13,7 +13,7 @@ Function that will investigate the probe level intensity of probes as a function
 }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
-  \item{gene}{A number of gene sequences as DNAstring, vectors of DNAStrings, character-vectors or \link[Biostrings]{readFASTA} outputs.}
+  \item{gene}{A number of gene sequences as DNAstring, DNAStringSets, or character-vectors with sequence.}
   \item{probeData}{Optional if a ProbeLevelSet is submitted as object argument. Otherwise, it must be a data frame with rownames corresponding to the featureNames of the ExpressionSet and a column named "sequence" with the probe sequences as character strings}
   \item{label}{An optional character string specifying a column name in the pData of the object. If this argument is given, the gene plot will be colour coded based on the different groups (factors) in the pData entry. If a summaryType other than 'dots' is selected the summarisation is done stratified by the different groups in the pData. It can be a numeric or integer entry, but it will be coerced to factors.}    
   \item{genename}{Optional character string specifying a gene name to include in the plot. If not included and a FASTA sequence is given, it will default to the name in the FASTA sequence. Otherwise, it will default to 'Unknown genename'.}

@@ -15,7 +15,7 @@ The top-level wrapper function that outputs as much data as possible, concerning
     }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
-  \item{gene}{A number of gene sequences as DNAString, list of DNAString objects, character-vectors or \link[Biostrings]{readFASTA} outputs.}
+  \item{gene}{A number of gene sequences as DNAString, DNAstringSets, or character-vectors with sequence.}
   \item{genomicData}{Optional. If only one gene is specified this can be of the same form as given in \link{exonStructure}. If more than one gene is given, it must be a list, containing of one of these forms of the argument for each of the genes, in the same order.}
   \item{probeData}{Optional if a ProbeLevelSet is submitted as object argument. Otherwise, it must be a data frame with rownames corresponding to the featureNames of the ExpressionSet and a column named "sequence" with the probe sequences as character strings}
   \item{label}{An optional character string specifying a column name in the pData of the object. If this argument is given, the gene plot will be colour coded based on the different groups (factors) in the pData entry. If a summaryType other than 'dots' is selected the summarisation is done stratified by the different groups in the pData.}    

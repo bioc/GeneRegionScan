@@ -653,8 +653,14 @@ readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 		#library(Biostrings)
 		gene <- as.character(gene)
 	}
+	
+	if(class(gene) == "DNAStringSet"){
+		gene <- as.character(gene)
+	}
+	
+	
 	if(class(gene) == "list"){
-		if(class(gene[[1]]) == "DNAString"){#special case of a list of DNAStrings
+		if(class(gene[[1]]) == "DNAString"){#special case of a list of DNAStrings - probably only for deprecated usages of the Biostrings package
 			new_gene <- vector()
 			for(i in 1:length(gene)){
 				new_gene <- c(new_gene,as.character(gene[[1]]))
@@ -668,6 +674,9 @@ readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 		new_gene <- list()
 		for(i in 1:length(gene)){
 			new_gene[[i]] <- list()
+			if(!is.null(names(gene[i]))){
+				new_gene[[i]][["desc"]] <- names(gene[i])
+			}
 			new_gene[[i]][["seq"]] <- gene[i]
 		}
 		
@@ -684,7 +693,7 @@ readGeneInput <- function(gene,genename=NULL,verbose=TRUE){
 	}
 	
 	
-#adding desc-part
+	#adding desc-part
 	if(!is.null(genename)){
 		if(length(genename) != 1 & length(genename) != length(gene)){
 			warning(paste("The length of the vector 'genename' is",length(genename),"and the number of genes given is",length(gene),"- I don't understand how to distribute the names to each gene, so they just got 'Unknown genename'"))

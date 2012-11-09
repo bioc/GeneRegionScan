@@ -15,7 +15,7 @@ and plot them in a meaningful way
 }
 \arguments{
   \item{object}{A ProbeLevelSet object or a regular ExpressionSet object (in which case a probeData argument is required). See \link{getLocalProbeIntensities} and related functions on how to create a ProbeLevelSet.}
-  \item{gene}{A number of gene sequences as DNAstring, vectors of DNAStrings, character-vectors or \link[Biostrings]{readFASTA} outputs.}
+  \item{gene}{A number of gene sequences as DNAstring, DNAStringSets or character vectors with sequence.}
   \item{probeData}{Optional if a ProbeLevelSet is submitted as object argument. Otherwise it must be a data frame with rownames corresponding to the featureNames of the ExpressionSet and a column named "sequence" with the probe sequences as character strings}
   \item{verbose}{TRUE or FALSE}
   \item{directions}{A character vector of the matching-directions that should be scanned (which combinations of complementary and reverse). Defaults to "all" which is shorthand for all possible directions, but can take anything from: c("matchForwardSense", "matchForwardAntisense", "matchReverseSense", "matchReverseAntisense")}

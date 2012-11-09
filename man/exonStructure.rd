@@ -10,15 +10,15 @@ Function that will paint the exon structure of a gene on the plots obtained by p
     exonStructure(mrna, genome, maxMismatch=4, y=0)
 }
 \arguments{
-  \item{mrna}{A gene sequence formatted as DNAstring, character-vectors or \link[Biostrings]{readFASTA} output.}
-  \item{genome}{A number of gene sequences as DNAstring, vectors of DNAStrings, character-vectors or \link[Biostrings]{readFASTA} outputs.}
+  \item{mrna}{A gene sequence formatted as DNAstring, DNAstringSet or character-vectors with sequence.}
+  \item{genome}{A number of gene sequences as DNAstring, vectors of DNAStrings, DNAstringSet or character-vectors with sequence.}
   \item{maxMismatch}{Integer. The maximum number of mismatches per exon that can be allowed before the exon is not allocated at the position in the template mrna. Defaults to 4.}
   \item{y}{Numeric. The vertical position of the exon structure (if ylim is changed)}    
 }
 \value{No value, but plots the layout of exons in a gene on the product of a call to \link{plotOnGene}.}
 \details{When given a sequence of the DNA divided by exons and a sequence of the corresponding mRNA string, this function
-will plot the layout of exons along the length of the x-axis on the current device. The sequences have to be given
-as FASTA sequences produced by the \link[Biostrings]{readFASTA} function in the Biostrings package. Furthermore the genome
+will plot the layout of exons along the length of the x-axis on the current device. The sequences can be given as character vectors with 
+sequence or as \link[Biostrings]{DNAstring} reads using the Biostrings package. Furthermore the genome
 must be divided with an entry for each exon. This is easily done by downloading the genome sequences of the gene-of-interest
 from http://genome.ucsc.edu and specifying "One FASTA record per region".
 
