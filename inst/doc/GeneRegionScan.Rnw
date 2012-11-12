@@ -80,7 +80,8 @@ data(exampleProbeLevelSet)
 pData(exampleProbeLevelSet)[1:3,]
 @
 
-The data also contains two nucleotide sequences: \Robject{mrna} and \Robject{genomic}. The first one is the mRNA sequence of FN1, an isoform known as fibronectin 1 isoform 2 preproprotein. FN1 has at least 16 different known isoforms. The sequence was loaded by a call to the deprecated funtion readFASTA, using a regular FASTA-formatted text file as argument (This will be updated to read.DNAStringSet soon).  The second sequence is the DNA sequence of the gene, with one FASTA entry per exon. We will return to that later.
+The data also contains two nucleotide sequences: \Robject{mrna} and
+\Robject{genomic}. The first one is the mRNA sequence of FN1, an isoform known as fibronectin 1 isoform 2 preproprotein. FN1 has at least 16 different known isoforms. The sequence was loaded by a call to read.DNAStringSet from the Biostrings package.  The second sequence is the DNA sequence of the gene, with one FASTA entry per exon. We will return to that later.
 
 The first thing we might want to do was to get an idea if any parts of the gene are not expressed at all. In this case, we might be investigating the wrong isoform, and would perhaps be better of finding another mRNA sequence. We do this by the simplest possible call to \Rfunction{plotOnGene}:
 
@@ -116,8 +117,8 @@ Try to run the same example using genotype2 and genotype3 as labels as well. Whi
 The final functionality to be demonstrated here, is the \Rfunction{plotCoexpression}. This function can be used to investigate coexpression. It works by calculating the Pearson correlation coefficient of all possible pairwise combinations of probes found in the gene. It then shows a colour map of all pairings with coefficents above the \Robject{correlationCutoff}. Furthermore, the function can be instructed to print the probe level information found in the \Robject{featureData} on screen. (In the example below we use a subset of the gene, because it takes quite a while to calculate correlation of all pairings of probes in long genes)
 
 <<plot5, fig=TRUE>>=
-mrna_subset<-mrna
-mrna_subset[[1]]$seq<-substr(mrna_subset[[1]]$seq,500,1000)
+mrna_subset<-mrna[[1]]
+mrna_subset<-mrna_subset[500:1000]
 plotCoexpression(exampleProbeLevelSet, gene=mrna_subset, correlationCutoff=0.5, probeLevelInfo=c("probeid","sequence"), verbose=FALSE)
 @
 
