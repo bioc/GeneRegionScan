@@ -18,7 +18,7 @@ Function that will paint the exon structure of a gene on the plots obtained by p
 \value{No value, but plots the layout of exons in a gene on the product of a call to \link{plotOnGene}.}
 \details{When given a sequence of the DNA divided by exons and a sequence of the corresponding mRNA string, this function
 will plot the layout of exons along the length of the x-axis on the current device. The sequences can be given as character vectors with 
-sequence or as \link[Biostrings]{DNAstring} reads using the Biostrings package. Furthermore the genome
+sequence or as \link[Biostrings]{DNAString} reads using the Biostrings package. Furthermore the genome
 must be divided with an entry for each exon. This is easily done by downloading the genome sequences of the gene-of-interest
 from http://genome.ucsc.edu and specifying "One FASTA record per region".
 

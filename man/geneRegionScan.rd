@@ -58,8 +58,8 @@ See \link{getLocalProbeIntensities} for more info on how to obtain ProbeLevelSet
 	geneRegionScan(exampleProbeLevelSet,mrna)
 	
 	#more complicated - note that we slice the mrna to simulate comparing two different isoforms
-	gene1<-DNAString(mrna[[1]]$seq)[1:1000]
-	gene2<-DNAString(mrna[[1]]$seq)[1500:3000]
+	gene1<-mrna[[1]][1:1000]
+	gene2<-mrna[[1]][1500:3000]
 	
 	geneRegionScan(exampleProbeLevelSet, list(gene1,gene2), genomicData=list(genomic,genomic), label="genotype3", summaryType="mean",
     testType="linear model", forcePValue=TRUE, cutoff=0.1, directions="all", correlationCutoff=0.6,
