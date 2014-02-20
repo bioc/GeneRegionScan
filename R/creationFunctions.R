@@ -396,7 +396,7 @@ getServerProbeIntensities <- function(
 		#Running on server check username, password, plink, pscp
 		
 		#if both plinkPath and pscpPath is set to NULL, we'll try to see if they are stored in the locations.txt file.
-		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(is.null(plinkPath) & is.null(pscpPath) & (file.access(locationFilePath,4) == 0)){
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
@@ -544,7 +544,7 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 	
 	#if all cdf, pgf and clf is set to null, but annotation is not, we'll assume it is a lazy user
 	#and see if this type of annotation has been used before.
-	locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+	locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 	if(is.null(cdfPath) & is.null(pgfPath) & is.null(clfPath) & !is.null(annotation) & (file.access(locationFilePath,4) == 0)){
 		locationFile <- file(locationFilePath,"r")
 		locationFileLines <- readLines(locationFile)
@@ -594,7 +594,7 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 			aptCelExtractPath <- aptCelExtractPath[1] #only need one, in case of more hits
 		}else{
 			#...if not in path, check if it has been used before on this computer 
-			locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+			locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
 			close(locationFile)
@@ -606,7 +606,7 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 			}
 			
 			#...if not used before, check if we can use the aptfiles in the exec folder of the package
-			executableFileOverviewPath <- file.path(.path.package("GeneRegionScan"),"configfiles","aptextractfiles.txt")
+			executableFileOverviewPath <- file.path(path.package("GeneRegionScan"),"configfiles","aptextractfiles.txt")
 			executableFileOverview <- read.table(executableFileOverviewPath,header=FALSE,sep="\t")
 			machineType <- paste(Sys.info()[["sysname"]],Sys.info()[["machine"]])
 			if(machineType %in% executableFileOverview[,1]){
@@ -614,13 +614,13 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 				
 				#Sometimes the file doesn't want to run on windows. We have to check that.
 				if(Sys.info()[["sysname"]] == "Windows"){
-					tempAptCelExtractPath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelExtractName)
+					tempAptCelExtractPath <- file.path(path.package("GeneRegionScan"),"exec",aptCelExtractName)
 					ERRORLEVEL <- system(shQuote(tempAptCelExtractPath),intern=TRUE)
 					if(length(ERRORLEVEL) > 20){ #if more than 20 lines -> safe to assume that the file worked and the help was printed
 						aptCelExtractPath <- tempAptCelExtractPath
 					}
 				}else{
-					aptCelExtractPath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelExtractName)
+					aptCelExtractPath <- file.path(path.package("GeneRegionScan"),"exec",aptCelExtractName)
 				}
 				
 				
@@ -652,7 +652,7 @@ getLocalProbeIntensities <- function(listOfProbesets,celfilePath,annotation=NULL
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor. 
 	#it was re-inserted because other it seems that other packages do it as well
 	if(file.access(locationFilePath,2) == 0){
-		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		#locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		locationFile <- file(locationFilePath,"r")
 		locationFileLines <- readLines(locationFile)
 		close(locationFile)
@@ -897,7 +897,7 @@ getProbesetsFromRegionOfInterest <- function(annotation,chromosome,start,end,pyt
 		}else{
 			#received and annotation for which there was no db_package_name. Will check locations.txt if this
 			#annotation has previously been run with mpsToPsFile and transcriptClustersFile.
-			locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+			locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 			if(file.access(locationFilePath,4) == 0){
 				locationFile <- file(locationFilePath,"r")
 				locationFileLines <- readLines(locationFile)
@@ -1008,7 +1008,7 @@ getProbesetsFromRegionOfInterest <- function(annotation,chromosome,start,end,pyt
 		#it was re-inserted because other it seems that other packages do it as well
 		
 		#saving the mpsToPsFile and transcriptClustersFile locations for next time 
-		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(file.access(locationFilePath,2) == 0){
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
@@ -1049,7 +1049,7 @@ getMetaprobesetsFromRegionOfInterest <- function(annotation,chromosome,start,end
 		
 		#received an annotation for which there was no db_package_name. Will check locations.txt if this
 		#annotation has previously been run with transcriptClustersFile.
-		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(file.access(locationFilePath,4) == 0){
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
@@ -1148,7 +1148,7 @@ getMetaprobesetsFromRegionOfInterest <- function(annotation,chromosome,start,end
 	#saving the transcriptClustersFile locations for next time 
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
 	#it was re-inserted because other it seems that other packages do it as well
-	locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+	locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 	if(file.access(locationFilePath,2) == 0){
 		locationFile <- file(locationFilePath,"r")
 		locationFileLines <- readLines(locationFile)
@@ -1291,7 +1291,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 	
 	#if all cdf, pgf and clf is set to null, but annotation is not, we'll assume it is a lazy user
 	#and see if this type of annotation has been used before.
-	locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+	locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 	if(is.null(cdfPath) & is.null(pgfPath) & is.null(clfPath) & !is.null(annotation) & (file.access(locationFilePath,4) == 0)){
 		locationFile <- file(locationFilePath,"r")
 		locationFileLines <- readLines(locationFile)
@@ -1353,7 +1353,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 			aptProbesetSummarizePath <- aptProbesetSummarizePath[1] #only need one, in case of more hits
 		}else{
 			#...if not in path, check if it has been used before on this computer 
-			locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+			locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
 			close(locationFile)
@@ -1366,7 +1366,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 			
 			
 			#...if not used before, check if we can use the aptfiles in the exec folder of the package
-			executableFileOverviewPath <- file.path(.path.package("GeneRegionScan"),"configfiles","aptsummarizefiles.txt")
+			executableFileOverviewPath <- file.path(path.package("GeneRegionScan"),"configfiles","aptsummarizefiles.txt")
 			executableFileOverview <- read.table(executableFileOverviewPath,header=FALSE,sep="\t")
 			machineType <- paste(Sys.info()[["sysname"]],Sys.info()[["machine"]])
 			if(machineType %in% executableFileOverview[,1]){
@@ -1374,13 +1374,13 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 				
 				#Sometimes the file doesn't want to run on windows. We have to check that.
 				if(Sys.info()[["sysname"]] == "Windows"){
-					tempAptCelSummarizePath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
+					tempAptCelSummarizePath <- file.path(path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
 					ERRORLEVEL <- system(shQuote(tempAptCelSummarizePath),intern=TRUE)
 					if(length(ERRORLEVEL) > 20){ #if more than 20 lines -> safe to assume that the file worked and the help was printed
 						aptProbesetSummarizePath <- tempAptCelSummarizePath
 					}
 				}else{
-					aptProbesetSummarizePath <- file.path(.path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
+					aptProbesetSummarizePath <- file.path(path.package("GeneRegionScan"),"exec",aptCelSummarizetName)
 				}
 				
 				
@@ -1410,7 +1410,7 @@ getLocalMetaprobeIntensities <- function(celfilePath,analysis="rma",metaProbeSet
 	#this functionality has been removed because it is not allowed to save settings between sessions in Bioconductor.
 	#it was re-inserted because other it seems that other packages do it as well
 	if(file.access(locationFilePath,2) == 0){
-		#locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		#locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		locationFile <- file(locationFilePath,"r")
 		locationFileLines <- readLines(locationFile)
 		close(locationFile)
@@ -1554,7 +1554,7 @@ getProbesetsFromMetaprobeset <- function(annotation,metaprobesets,pythonPath=NUL
 	if(is.null(mpsToPsFile)){
 		#Will check locations.txt if this
 		#annotation has previously been run with mpsToPsFile and transcriptClustersFile.
-		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(file.access(locationFilePath,4) == 0){
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
@@ -1641,7 +1641,7 @@ getProbesetsFromMetaprobeset <- function(annotation,metaprobesets,pythonPath=NUL
 		#it was re-inserted because other it seems that other packages do it as well
 		
 		#saving the mpsToPsFilelocations for next time 
-		locationFilePath <- file.path(.path.package("GeneRegionScan"),"configfiles","locations.txt")
+		locationFilePath <- file.path(path.package("GeneRegionScan"),"configfiles","locations.txt")
 		if(file.access(locationFilePath,2) == 0){
 			locationFile <- file(locationFilePath,"r")
 			locationFileLines <- readLines(locationFile)
