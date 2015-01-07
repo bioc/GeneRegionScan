@@ -1,9 +1,9 @@
 Package: GeneRegionScan
-Version: 1.23.0
+Version: 1.23.1
 Date: 2009-10-16
 Title: GeneRegionScan
 Author: Lasse Folkersen, Diego Diez
-Maintainer: Lasse Folkersen <lasse.folkersen@ki.se>
+Maintainer: Lasse Folkersen <lasfol@cbs.dtu.dk>
 Depends: methods, Biobase (>= 2.5.5), Biostrings
 Imports: Biobase (>= 2.5.5), affxparser, RColorBrewer, Biostrings
 Suggests: BSgenome, affy, AnnotationDbi
