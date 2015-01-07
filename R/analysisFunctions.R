@@ -274,16 +274,16 @@ setMethod("findProbePositions", "ExpressionSet",
 			
 			for(match_direction_name in directions){
 				match_direction <- get(match_direction_name)
-				if(sum(countIndex(match_direction) > 1) > 0){
-					stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
+				if(sum(elementLengths(match_direction) > 1) > 0){
+					stop(paste(sum(elementLengths(match_direction) > 1),"of the probes matched more than one time in the sequence"))
 				}
-				if(sum(countIndex(match_direction) == 1) > 0){
+				if(sum(elementLengths(match_direction) == 1) > 0){
 					
 					if("all" %in% directions | length(directions) > 1){
-						print(paste("Found",sum(countIndex(match_direction) == 1),"probes matching in",match_direction_name))
+						print(paste("Found",sum(elementLengths(match_direction) == 1),"probes matching in",match_direction_name))
 					}
 					
-					index <- which(countIndex(match_direction) == 1)
+					index <- which(elementLengths(match_direction) == 1)
 					probeid <- rownames(probeData)[index]
 					probeposition_here <- unlist(startIndex(match_direction)[index])
 					names(probeposition_here) <- probeid
@@ -825,11 +825,11 @@ setMethod("plotCoexpression", "ExpressionSet",
 #				
 #				for(match_direction_name in directions){
 #					match_direction <- get(match_direction_name)
-#					if(sum(countIndex(match_direction) > 1) > 0){
-#						stop(paste(sum(countIndex(match_direction) > 1),"of the probes matched more than one time in the sequence"))
+#					if(sum(elementLengths(match_direction) > 1) > 0){
+#						stop(paste(sum(elementLengths(match_direction) > 1),"of the probes matched more than one time in the sequence"))
 #					}
-#					if(sum(countIndex(match_direction) == 1) > 0){
-#						index <- which(countIndex(match_direction) == 1)
+#					if(sum(elementLengths(match_direction) == 1) > 0){
+#						index <- which(elementLengths(match_direction) == 1)
 #						probeid <- rownames(probeData)[index]
 #						probeposition_here <- unlist(startIndex(match_direction)[index])
 #						names(probeposition_here) <- probeid
